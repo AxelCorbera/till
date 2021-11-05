@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "446713618642",
+    "project_id": "till-285823",
+    "storage_bucket": "till-285823.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446713618642:android:c0ea4dd934e55612580d0b",
+        "android_client_info": {
+          "package_name": "com.corbera.tillapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446713618642-egggkbmd5gpe4ehh5md5pm7snvlclcl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corbera.tillapp",
+            "certificate_hash": "f37e5cf6e206aba2b76d4a5ecbb437d5888911e4"
+          }
+        },
+        {
+          "client_id": "446713618642-molmi7rnioa25trvg6i3l5qfs35rmgbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjzrt1kWopLYZfkUOafFuSNDrxO8S-QCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446713618642-molmi7rnioa25trvg6i3l5qfs35rmgbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
