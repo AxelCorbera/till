@@ -1,7 +1,10 @@
 library till.globals;
 
+import 'package:till/scripts/db/json/listado.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart';
 import 'package:till/scripts/request.dart';
+
+Listado listado = Listado();
 
 Usuario? usuario =
     Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");

@@ -159,7 +159,7 @@ class _PurchasesState extends State<Purchases> {
                                         productos: compras.productos![index],
                                         total: compras.total![index],
                                         pago: compras.pago![index],
-                                        estado: compras.estado[index],
+                                        estado: compras.estado![index],
                                         tarjeta: compras.tarjeta![index],
                                         idPago: compras.idPago![index],
                                         documento: compras.documento![index],
@@ -202,9 +202,9 @@ class _PurchasesState extends State<Purchases> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        compras.estado[index] ==
+                                                        compras.estado![index] ==
                                                                     "approved" ||
-                                                                compras.estado[
+                                                                compras.estado![
                                                                         index] ==
                                                                     "pagado"
                                                             ? Icon(
@@ -242,7 +242,7 @@ class _PurchasesState extends State<Purchases> {
                                                         ),
                                                         SizedBox(
                                                           height: 4,
-                                                        ),compras.estado[index]=="approved"?
+                                                        ),compras.estado![index]=="approved"?
                                                         Text(
                                                           "Aprobado",
                                                           style: TextStyle(
@@ -252,7 +252,7 @@ class _PurchasesState extends State<Purchases> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold),
-                                                        ):compras.estado[index]=="rejected"?
+                                                        ):compras.estado![index]=="rejected"?
                                                   Text(
                                                     "Rechazado",
                                                     style: TextStyle(
@@ -261,7 +261,7 @@ class _PurchasesState extends State<Purchases> {
                                                         fontSize: 12,
                                                         fontWeight:
                                                         FontWeight
-                                                            .bold)):Text("Error: "+ compras.estado[index],
+                                                            .bold)):Text("Error: "+ compras.estado![index],
                                                     style: TextStyle(
                                                         color:
                                                         Colors.grey,
@@ -399,15 +399,15 @@ class _PurchasesState extends State<Purchases> {
             telefono: []);
 
         if (filtro == "aprobado") {
-          for (var i in compras.estado) {
+          for (var i in compras.estado!) {
             if (i == "approved" || i == "pagado") {
-              int a = compras.estado.indexOf(i);
+              int a = compras.estado!.indexOf(i);
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
               filtroCompra.cliente!.add(compras.cliente![a]);
               filtroCompra.productos!.add(compras.productos![a]);
               filtroCompra.total!.add(compras.total![a]);
-              filtroCompra.estado.add(compras.estado[a]);
+              filtroCompra.estado!.add(compras.estado![a]);
               filtroCompra.tarjeta!.add(compras.tarjeta![a]);
               filtroCompra.pago!.add(compras.pago![a]);
               filtroCompra.documento!.add(compras.documento![a]);
@@ -421,15 +421,15 @@ class _PurchasesState extends State<Purchases> {
             }
           }
         } else {
-          for (var i in compras.estado) {
+          for (var i in compras.estado!) {
             if (i != "approved" && i != "pagado") {
-              int a = compras.estado.indexOf(i);
+              int a = compras.estado!.indexOf(i);
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
               filtroCompra.cliente!.add(compras.cliente![a]);
               filtroCompra.productos!.add(compras.productos![a]);
               filtroCompra.total!.add(compras.total![a]);
-              filtroCompra.estado.add(compras.estado[a]);
+              filtroCompra.estado!.add(compras.estado![a]);
               filtroCompra.tarjeta!.add(compras.tarjeta![a]);
               filtroCompra.pago!.add(compras.pago![a]);
               filtroCompra.documento!.add(compras.documento![a]);

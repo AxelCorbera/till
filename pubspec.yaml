@@ -38,6 +38,8 @@ dependencies:
   google_sign_in: ^5.2.1
   font_awesome_flutter: ^9.2.0
   provider: ^6.0.1
+  cloud_firestore: ^3.1.0
+  qr_code_scanner: ^0.6.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -69,6 +71,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - lib/assets/images/tillrojo.png
+  - lib/assets/images/nenita.png
+  - lib/assets/images/nenita_qr.png
   - lib/assets/images/fondoClaro.jpg
   - lib/assets/images/fondoOscuro.jpg
   - lib/assets/icons/logosMetodoPago/amex.png
@@ -87,6 +91,12 @@ flutter:
   - lib/assets/icons/logosMetodoPago/shopping.png
   - lib/assets/icons/logosMetodoPago/visa.png
   - lib/assets/icons/logosMetodoPago/visadebito.jpg
+  - lib/assets/icons/logosComercios/Carrefour.png
+  - lib/assets/icons/logosComercios/Coto.png
+  - lib/assets/icons/logosComercios/Easy.png
+  - lib/assets/icons/logosComercios/Makro.png
+  - lib/assets/icons/logosComercios/Sodimac.png
+  - lib/assets/icons/logosComercios/Walmart.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

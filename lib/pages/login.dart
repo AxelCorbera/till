@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,6 +19,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  final firestoreInstance = FirebaseFirestore.instance;
+
   bool _loading = false;
   String userName = '';
   String password = '';
@@ -128,11 +132,9 @@ class _LoginState extends State<Login> {
                               ),),
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
                           RaisedButton(
                             onPressed: () {
+                              _loading;
                               _login(context,true);
                             },
                             shape: RoundedRectangleBorder(
@@ -154,53 +156,62 @@ class _LoginState extends State<Login> {
                                     minWidth: 88.0, minHeight: 45.0),
                                 // min sizes for Material buttons
                                 alignment: Alignment.center,
-                                child: Text(
-                                  'Ingresar',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20
-                                  ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Ingresar',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20
+                                      ),
+                                    ),
+                                    if (_loading)
+                                      Container(
+                                        height: 20,
+                                        width: 20,
+                                        margin: const EdgeInsets.only(left: 20),
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                  ],
                                 ),
                               ),
                             ),
+                          ),
+                          //if (_errorMessage.isNotEmpty)
+                            // Padding(
+                            //   padding: const EdgeInsets.all(18.0),
+                            //   child: Text(
+                            //     _errorMessage,
+                            //     style: TextStyle(
+                            //         color: Colores.rojo,
+                            //         fontWeight: FontWeight.bold),
+                            //     textAlign: TextAlign.center,
+                            //   ),
+                            // ),
+
+                            //MENSAJE DE ERROR
+                          SizedBox(
+                            height: 10,
                           ),
                           FlatButton(
                             textColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             onPressed: () {
-                              _login(context, false);
-                              _loading;
+                              Navigator.of(context).pushNamed('/Register')
+                              .then((context) => (){setState(() {
+                              });});
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text("Crear cuenta",
-                                  style: TextStyle(
-                                      color: Colores.rojo
-                                  ),),
-                                if (_loading)
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    margin: const EdgeInsets.only(left: 20),
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  )
-                              ],
-                            ),
+                            child: Text("Crear cuenta",
+                              style: TextStyle(
+                                  color: Colores.rojo
+                              ),),
                           ),
-                          if (_errorMessage.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: Text(
-                                _errorMessage,
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           RaisedButton(
                             onPressed: () {
                               _loginGoogle();
@@ -254,53 +265,80 @@ class _LoginState extends State<Login> {
   Future _loginGoogle() async{
     final provider = await Provider.of<
         GoogleSignInProvider>(context, listen: false);
-    provider.googleLogin();
+    provider.googleLogin()
+        .then((value) => Navigator.of(context).pushNamed('/Home'));
 
-    if(provider.user.id.isNotEmpty){
-      Navigator.of(context).pushNamed('/Home');
-
-      globals.usuario!.nombre = provider.user.displayName;
-    }
+        //Navigator.of(context).pushNamed('/Home');
+        globals.login = true;
+        globals.usuario!.nombre = provider.user.displayName;
 
   }
 
   void _login(BuildContext context, bool autolog) async {
     if (!_loading) {
-      if (autolog == true || _keyForm.currentState!.validate()) {
-        if (autolog == false)
-          _keyForm.currentState!.save();
+      if (_keyForm.currentState!.validate()) {
+        _keyForm.currentState!.save();
         setState(() {
           _loading = true;
         });
 
-        String log = await AuthenticationService(FirebaseAuth.instance)
+        final _auth = FirebaseAuth.instance;
+        String log = await AuthenticationService(_auth)
             .signIn(email: userName, password: password);
 
-        print(log);
 
-        //     setState(() {
-        //       if (token.id != '' && token.id != '-1') {
-        //         _loading = false;
-        //         _errorMessage = "";
-        //         globals.login = true;
-        //         _loginSave();
-        //         Navigator.of(context).pushNamed('/Home');
-        //       } else if (token.id == '' && token.id != '-1') {
-        //         _loading = false;
-        //         _errorMessage = "Usuario y/o clave incorrecto";
-        //       } else if (token.id != '' && token.id == '-1') {
-        //         _loading = false;
-        //         _mostrarMensaje('Error de conexion');
-        //       }
-        //     });
-        //   }
-        // } else {
-        //   setState(() {
-        //     _loading = false;
-        //     _errorMessage = "";
-        //     print(userName + '>>' + password);
-        //   });
-      }
+            setState(() {
+              if (log
+              == 'Signed in') {
+                _loading = false;
+                _errorMessage = "";
+                globals.login = true;
+                firestoreInstance.collection("users").get().then((querySnapshot) {
+                  querySnapshot.docs.forEach((result) {
+                    print(result.get('uid') + '<>' + _auth.currentUser!.uid);
+                    if (result.get('uid') == _auth.currentUser!.uid){
+                      globals.usuario!.id = result.get('uid');
+                      globals.usuario!.correo = result.get('correo');
+                      globals.usuario!.nombre = result.get('nombre');
+                    }
+                    });
+                  }).
+              then((value) => Navigator.of(context).pushNamed('/Home'));
+
+                //_loginSave();
+
+                //Navigator.of(context).pushNamed('/Home');
+              } else if (log.contains('There is no user record corresponding')) {
+                _loading = false;
+                _errorMessage = "Usuario incorrecto";
+                _mostrarMensaje('Usuario incorrecto');
+              } else if (log.contains('The password is invalid')) {
+                _loading = false;
+                _errorMessage = "Clave incorrecta";
+                _mostrarMensaje('Clave incorrecta');
+              } else if (log.contains('Try again later')) {
+                _loading = false;
+                _errorMessage = "Has realizado muchos intentos. Intenta mas tarde";
+                _mostrarMensaje('Has realizado muchos intentos. Intenta mas tarde');
+              } else{
+                _loading = false;
+                _errorMessage = "Error de conexion";
+                _mostrarMensaje(log);
+              }
+
+
+              //There is no user record corresponding to this identifier. The user may have been deleted.
+              //The password is invalid or the user does not have a password
+
+            });
+          }
+        } else {
+          setState(() {
+            _loading = false;
+            _errorMessage = "";
+            print(userName + '>>' + password);
+          });
+
     }
   }
 

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:till/constants/themes.dart';
 import 'package:till/globals.dart' as globals;
+import 'package:till/pages/scan_products.dart';
 import 'package:till/provider/google_sing_in.dart';
-import 'package:till/scenes/login.dart';
+import 'package:till/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:till/pages/register.dart';
+import 'package:till/pages/scan_qr.dart';
 
 import 'Home.dart';
 
@@ -37,6 +40,12 @@ class MyApp extends StatelessWidget {
               return Login();
             case '/Home':
               return Home();
+            case '/Register':
+              return Register();
+            case '/Scan_QR':
+              return Scan_QR();
+            case '/Scan_Products':
+              return Scan_Products();
             default:
               return Home();
           }
