@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -17,7 +18,10 @@ class Scan_Products extends StatefulWidget {
 
 
 class _Scan_ProductsState extends State<Scan_Products> {
+  AudioCache player = new AudioCache();
+  final alarmAudioPath = "sounds/lector.mp3";
   Producto producto = Producto(id:'');
+  AudioCache audioCache = AudioCache();
   bool scan = true;
   Barcode? result;
   QRViewController? controller;
@@ -64,7 +68,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
-                  producto.id =='' ?Text(
+                  scan==true?Text(
                     'Pasando el lector por el\n\n'
                     'código de barras',
                     textAlign: TextAlign.center,
@@ -74,14 +78,33 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         fontWeight: FontWeight.bold),
                   ):Column(
                     children: [
-                      Text(
-                        producto.nombre.toString(),
+                      producto.nombre==null?
+                  Text(
+                        'Producto no registrado',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
-                      ),
+                      ):
+                  Text(
+                      producto.nombre.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                  ),
+                      SizedBox(height: 10,),
+                      producto.nombre==null?
+                      Text(
+                        'intenta nuevamente',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ):
                       Text(
                         '\$ '+ producto.precio.toString(),
                         textAlign: TextAlign.center,
@@ -90,9 +113,11 @@ class _Scan_ProductsState extends State<Scan_Products> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(height: 10,),
                       RaisedButton(onPressed: (){
+                        scan=true;
                         setState(() {
-                          scan=true;
+
                           producto = Producto(id: '');
                         });
                       },
@@ -120,18 +145,18 @@ class _Scan_ProductsState extends State<Scan_Products> {
                 decoration: BoxDecoration(
                     color: Colores.azulOscuro,
                     borderRadius: BorderRadius.circular(20)),
-                child: producto.id =='' ?ClipRRect(
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
                     child: _buildQrView(context), // this is my CameraPreview
                   ),
-                ):
-                Center(child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CircularProgressIndicator(),
-                  ],
-                ),),
+                )
+                //     :Center(child: Column(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     CircularProgressIndicator(),
+                //   ],
+                // ),),
               ),
             ),
           ],
@@ -162,34 +187,38 @@ class _Scan_ProductsState extends State<Scan_Products> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) {
-      scan=false;
-      result = scanData;
-      _producto(result!.code.toString());
-      print(result!.code.toString());
-    });
+      setState(() {
+        this.controller = controller;
+      });
+      //if(scan == true) {
+      controller.scannedDataStream.listen((scanData) {
+        // scan = false;
+        result = scanData;
+        _producto(result!.code.toString());
+      });
   }
 
   void _producto(String codigo) {
-    for(int i =0;i<globals.listado.codigo!.length;i++){
-      if(codigo == globals.listado.codigo![i]){
-        print('producto encontrado!!');
-        producto.id = globals.listado.id![i];
-        producto.codigo = globals.listado.codigo![i];
-        producto.nombre = globals.listado.nombre![i];
-        producto.precio = globals.listado.precio![i];
-        producto.descuento = globals.listado.descuento![i];
-        producto.acumulable = globals.listado.acumulable![i];
-        producto.tipo = globals.listado.tipo![i];
-        producto.tope = globals.listado.tope![i];
-        break;
-      }
-      setState(() {
+    if (scan == true) {
+      player.play(alarmAudioPath);
+      scan = false;
+      for (int i = 0; i < globals.listado.codigo!.length; i++) {
+        if (codigo == globals.listado.codigo![i]) {
+          print('producto encontrado!!');
+          producto.id = globals.listado.id![i];
+          producto.codigo = globals.listado.codigo![i];
+          producto.nombre = globals.listado.nombre![i];
+          producto.precio = globals.listado.precio![i];
+          producto.descuento = globals.listado.descuento![i];
+          producto.acumulable = globals.listado.acumulable![i];
+          producto.tipo = globals.listado.tipo![i];
+          producto.tope = globals.listado.tope![i];
+          break;
+        }
+        setState(() {
 
-      });
+        });
+      }
     }
   }
 
