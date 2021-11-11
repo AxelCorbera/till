@@ -16,16 +16,16 @@ class Scan_Products extends StatefulWidget {
   _Scan_ProductsState createState() => _Scan_ProductsState();
 }
 
-
 class _Scan_ProductsState extends State<Scan_Products> {
   AudioCache player = new AudioCache();
   final alarmAudioPath = "sounds/lector.mp3";
-  Producto producto = Producto(id:'');
+  Producto producto = Producto(id: '');
   AudioCache audioCache = AudioCache();
   bool scan = true;
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void reassemble() {
@@ -35,6 +35,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
     }
     controller!.resumeCamera();
   }
+
   List<int> numCompras = [];
 
   @override
@@ -68,62 +69,69 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
-                  scan==true?Text(
-                    'Pasando el lector por el\n\n'
-                    'código de barras',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ):Column(
-                    children: [
-                      producto.nombre==null?
-                  Text(
-                        'Producto no registrado',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ):
-                  Text(
-                      producto.nombre.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                  ),
-                      SizedBox(height: 10,),
-                      producto.nombre==null?
-                      Text(
-                        'intenta nuevamente',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ):
-                      Text(
-                        '\$ '+ producto.precio.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10,),
-                      RaisedButton(onPressed: (){
-                        scan=true;
-                        setState(() {
-
-                          producto = Producto(id: '');
-                        });
-                      },
-                      child: Text('Reintentar'),)
-                    ],
-                  ),
+                  scan == true
+                      ? Text(
+                          'Pasando el lector por el\n\n'
+                          'código de barras',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : Column(
+                          children: [
+                            producto.nombre == null
+                                ? Text(
+                                    'Producto no registrado',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    producto.nombre.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            producto.nombre == null
+                                ? Text(
+                                    'intenta nuevamente',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    '\$ ' + producto.precio.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                scan = true;
+                                setState(() {
+                                  producto = Producto(id: '');
+                                });
+                              },
+                              child: Text('Reintentar'),
+                            )
+                          ],
+                        ),
                   Container(
                     width: 280,
                     height: 280,
@@ -140,24 +148,24 @@ class _Scan_ProductsState extends State<Scan_Products> {
             ),
             Center(
               child: Container(
-                width: 330,
-                height: 330,
-                decoration: BoxDecoration(
-                    color: Colores.azulOscuro,
-                    borderRadius: BorderRadius.circular(20)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    child: _buildQrView(context), // this is my CameraPreview
+                  width: 330,
+                  height: 330,
+                  decoration: BoxDecoration(
+                      color: Colores.azulOscuro,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      child: _buildQrView(context), // this is my CameraPreview
+                    ),
+                  )
+                  //     :Center(child: Column(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     CircularProgressIndicator(),
+                  //   ],
+                  // ),),
                   ),
-                )
-                //     :Center(child: Column(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     CircularProgressIndicator(),
-                //   ],
-                // ),),
-              ),
             ),
           ],
         ),
@@ -187,15 +195,15 @@ class _Scan_ProductsState extends State<Scan_Products> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-      setState(() {
-        this.controller = controller;
-      });
-      //if(scan == true) {
-      controller.scannedDataStream.listen((scanData) {
-        // scan = false;
-        result = scanData;
-        _producto(result!.code.toString());
-      });
+    setState(() {
+      this.controller = controller;
+    });
+    //if(scan == true) {
+    controller.scannedDataStream.listen((scanData) {
+      // scan = false;
+      result = scanData;
+      _producto(result!.code.toString());
+    });
   }
 
   void _producto(String codigo) {
@@ -213,13 +221,96 @@ class _Scan_ProductsState extends State<Scan_Products> {
           producto.acumulable = globals.listado.acumulable![i];
           producto.tipo = globals.listado.tipo![i];
           producto.tope = globals.listado.tope![i];
+          _productoEncontrado();
           break;
         }
-        setState(() {
-
-        });
+        setState(() {});
       }
     }
+  }
+
+  void _productoEncontrado() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('¡Producto encontrado!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(producto.nombre.toString(),
+                      style: TextStyle(
+                        color: Colores.violeta,
+                          fontWeight: FontWeight.bold
+                      ),
+                      textAlign: TextAlign.center,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('\$ ' + producto.precio.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        fontSize: 25
+                      ),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Cuantas unidades desea llevar?'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(onPressed: (){}, icon: Icon(Icons.remove)),
+                          Text('1',
+                            style: TextStyle(
+                                fontSize: 20
+                            ),),
+                          IconButton(onPressed: (){}, icon: Icon(Icons.add)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          RaisedButton(
+                            child: Text("Cancelar"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          RaisedButton(
+                            child: Text("Agregar"),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
@@ -236,5 +327,4 @@ class _Scan_ProductsState extends State<Scan_Products> {
     controller?.dispose();
     super.dispose();
   }
-
 }

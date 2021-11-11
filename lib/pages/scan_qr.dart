@@ -14,14 +14,15 @@ class Scan_QR extends StatefulWidget {
   _Scan_QRState createState() => _Scan_QRState();
 }
 
-
 class _Scan_QRState extends State<Scan_QR> {
   Comercios comercios = Comercios();
+  String comercioEncontrado = '';
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _cargarComercios();
   }
+
   String qr = '';
 
   Barcode? result;
@@ -36,12 +37,12 @@ class _Scan_QRState extends State<Scan_QR> {
     }
     controller!.resumeCamera();
   }
+
   List<int> numCompras = [];
 
   @override
   Widget build(BuildContext context) {
-    if(qr!='')
-      _cargarListado();
+    if (qr != '') _cargarListado();
     return Scaffold(
       body: Container(
         constraints: BoxConstraints(
@@ -64,35 +65,39 @@ class _Scan_QRState extends State<Scan_QR> {
                   SizedBox(
                     height: 35,
                   ),
-                  qr =='' ?Text(
-                    'Empezá a comprar',
-                    style: TextStyle(
-                        color: Colores.rojo,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ):Text(
-                    qr,
-                    style: TextStyle(
-                        color: Colores.rojo,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  qr =='' ?Text(
-                    'Escaneando el código QR en el comercio\n\n'
-                    'y accediendo a la lista de precios',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ):Text(
-                    'Ingresando...',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  qr == ''
+                      ? Text(
+                          'Empezá a comprar',
+                          style: TextStyle(
+                              color: Colores.rojo,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : Text(
+                          comercioEncontrado,
+                          style: TextStyle(
+                              color: Colores.rojo,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                  qr == ''
+                      ? Text(
+                          'Escaneando el código QR en el comercio\n\n'
+                          'y accediendo a la lista de precios',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : Text(
+                          'Ingresando...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                   Container(
                     width: 280,
                     height: 280,
@@ -114,24 +119,30 @@ class _Scan_QRState extends State<Scan_QR> {
                 decoration: BoxDecoration(
                     color: Colores.azulOscuro,
                     borderRadius: BorderRadius.circular(20)),
-                child: qr =='' ?ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    child: _buildQrView(context), // this is my CameraPreview
-                  ),
-                ):
-                Center(child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CircularProgressIndicator(),
-                    if(qr!='')
-                      RaisedButton(onPressed: (){
-                        setState(() {
-                          qr = '';
-                        });
-                      }, child: Text('Reintentar')),
-                  ],
-                ),),
+                child: qr == ''
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          child:
+                              _buildQrView(context), // this is my CameraPreview
+                        ),
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CircularProgressIndicator(),
+                            if (qr != '')
+                              RaisedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      qr = '';
+                                    });
+                                  },
+                                  child: Text('Reintentar')),
+                          ],
+                        ),
+                      ),
               ),
             ),
           ],
@@ -169,17 +180,31 @@ class _Scan_QRState extends State<Scan_QR> {
       setState(() {
         result = scanData;
         final s = result!.code;
-        qr=s.toString();
+        qr = s.toString();
+        _comericoEncontrado();
       });
+    });
+    //_comericoEncontrado();
+  }
+
+  void _comericoEncontrado() {
+    int i = 0;
+    comercios.qr!.forEach((element) {
+      if (element == qr) {
+        comercioEncontrado = comercios.razonsocial![i];
+        return;
+      }
+      i++;
     });
   }
 
-  void _cargarComercios() async{
+  void _cargarComercios() async {
     comercios = await cargarComercios();
   }
+
   Future<void> _cargarListado() async {
-    for(int i = 0 ; i< comercios.qr!.length;i++){
-      if(comercios.qr![i] == qr){
+    for (int i = 0; i < comercios.qr!.length; i++) {
+      if (comercios.qr![i] == qr) {
         globals.listado = await cargarListado(comercios.razonsocial![i]);
         print(globals.listado.id!.length.toString() + 'productos cargados');
         Navigator.of(context).pushNamed('/Scan_Products');
