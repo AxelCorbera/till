@@ -22,12 +22,12 @@ class Carrito {
   final List<String> codigo;
   final List<String> marca;
   final List<String> nombre;
-  final List<String> cantidad;
+  final List<int> cantidad;
   final List<String> stock;
   final List<dynamic> precio;
   final List<String> imagen;
-  final List<String>? tamano;
-  final List<String> color;
+  final List<String>? descuento;
+  final List<String> tope;
 
   Carrito({
     required this.id,
@@ -38,8 +38,8 @@ class Carrito {
     required this.stock,
     required this.precio,
     required this.imagen,
-    required this.tamano,
-    required this.color,
+    required this.descuento,
+    required this.tope,
   });
 }
 
@@ -52,5 +52,5 @@ Carrito carrito = Carrito(
     stock: [],
     precio: [],
     imagen: [],
-    tamano: [],
-    color: []);
+    descuento: [],
+    tope: []);

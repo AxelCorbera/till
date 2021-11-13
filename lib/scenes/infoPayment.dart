@@ -259,212 +259,210 @@ class _InfoPaymentState extends State<InfoPayment> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-              content: SingleChildScrollView(
-            child: Form(
-              key: loc != ''
-                  ? _keyForm:null,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  DropdownButtonFormField(
-                    value: prov != '' ? prov : null,
-                    onTap: () {},
-                    onSaved: (value) {},
-                    onChanged: (value) {
-                      Navigator.pop(context);
-                      _direccion(context, value.toString(), '', '', '');
-                    },
-                    hint: Text(
-                      'Provincia',
-                    ),
-                    isExpanded: true,
-                    items: [
-                      "BUENOS AIRES",
-                      "CAPITAL FEDERAL",
-                      "CATAMARCA",
-                      "CHACO",
-                      "CHUBUT",
-                      "CORDOBA",
-                      "CORRIENTES",
-                      "ENTRE RIOS",
-                      "FORMOSA",
-                      "JUJUY",
-                      "LA PAMPA",
-                      "LA RIOJA",
-                      "MENDOZA",
-                      "MISIONES",
-                      "NEUQUEN",
-                      "RIO NEGRO",
-                      "SALTA",
-                      "SAN JUAN",
-                      "SAN LUIS",
-                      "SANTA CRUZ",
-                      "SANTA FE",
-                      "SANTIAGO DEL ESTERO",
-                      "TIERRA DEL FUEGO",
-                      "TUCUMAN",
-                    ].map((String val) {
-                      return DropdownMenuItem(
-                        value: val,
-                        child: Text(
-                          val,
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  prov != ''
-                      ? DropdownButtonFormField(
-                          value: muni != '' ? muni : null,
-                          onTap: () {},
-                          onSaved: (value) {},
-                          onChanged: (value) {
-                            Navigator.pop(context);
-                            _direccion(context, prov, value.toString(), '', '');
-                          },
-                          hint: Text(
-                            'Municipio',
-                          ),
-                          isExpanded: true,
-                          items: dir.ListaMunicipio(prov).map((String val) {
-                            return DropdownMenuItem(
-                              value: val,
-                              child: Text(
-                                val,
-                              ),
-                            );
-                          }).toList(),
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  muni != ''
-                      ? DropdownButtonFormField(
-                          value: loc != '' ? loc : null,
-                          onTap: () {},
-                          onSaved: (value) {},
-                          onChanged: (value) {
-                            Navigator.pop(context);
-                            _direccion(
-                                context, prov, muni, value.toString(), '');
-                          },
-                          hint: Text(
-                            'Localidad',
-                          ),
-                          isExpanded: true,
-                          items: dir.ListaLocalidades(prov, muni)
-                              .map((String val) {
-                            return DropdownMenuItem(
-                              value: val,
-                              child: Text(
-                                val,
-                              ),
-                            );
-                          }).toList(),
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  loc != ''
-                      ? TextFormField(
-                          initialValue: dire != '' ? dire : null,
-                          decoration: InputDecoration(
-                            labelText: "Calle: ",
-                          ),
-                          onSaved: (value) {},
-                          onChanged: (value) {
-                            domicilio.calle = value.toString().toUpperCase();
-                          },
-                    validator: (value){
-                            if(value.toString().isEmpty)
-                              return 'Este campo es obligatorio';
-                    },
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  loc != ''
-                      ? TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "Nro.: ",
-                    ),
-                    onSaved: (value) {},
-                    onChanged: (value) {
-                      domicilio.numero = int.parse(value);
-                    },
-                    validator: (value){
-                      if(value.toString().isEmpty)
-                        return 'Este campo es obligatorio';
-                    },
-                  )
-                      : SizedBox(
-                    height: 0,
-                  ),
-                  loc != ''
-                      ? TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Piso: ",
-                    ),
-                    onSaved: (value) {},
-                    onChanged: (value) {
-                      domicilio.piso = value.toString().toUpperCase();
-                    },
-                  )
-                      : SizedBox(
-                    height: 0,
-                  ),
-                  loc != ''
-                      ? TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Departamento: ",
-                    ),
-                    onSaved: (value) {},
-                    onChanged: (value) {
-                      domicilio.departamento = value.toString().toUpperCase();
-                    },
-                  )
-                      : SizedBox(
-                    height: 0,
-                  ),
-                  loc != ''
-                      ? ButtonBar(
-                          children: [
-                            RaisedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Cancelar'),
+          return StatefulBuilder(
+            builder: (context, setState){
+              return AlertDialog(
+                  content: SingleChildScrollView(
+                    child: Form(
+                      key: loc != ''
+                          ? _keyForm:null,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          DropdownButtonFormField(
+                            value: prov != '' ? prov : null,
+                            onTap: () {},
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              setState((){
+                                prov = value.toString();
+                              });
+                              //Navigator.pop(context);
+                              //_direccion(context, value.toString(), '', '', '');
+                            },
+                            hint: Text(
+                              'Provincia',
                             ),
-                            RaisedButton(
-                              onPressed: () {
-                                if(_keyForm.currentState!.validate()) {
-                                  domicilio.provincia = prov;
-                                  domicilio.municipio = muni;
-                                  domicilio.localidad = loc;
+                            isExpanded: true,
+                            items: [
+                              "BUENOS AIRES",
+                              "CAPITAL FEDERAL",
+                              "CATAMARCA",
+                              "CHACO",
+                              "CHUBUT",
+                              "CORDOBA",
+                              "CORRIENTES",
+                              "ENTRE RIOS",
+                              "FORMOSA",
+                              "JUJUY",
+                              "LA PAMPA",
+                              "LA RIOJA",
+                              "MENDOZA",
+                              "MISIONES",
+                              "NEUQUEN",
+                              "RIO NEGRO",
+                              "SALTA",
+                              "SAN JUAN",
+                              "SAN LUIS",
+                              "SANTA CRUZ",
+                              "SANTA FE",
+                              "SANTIAGO DEL ESTERO",
+                              "TIERRA DEL FUEGO",
+                              "TUCUMAN",
+                            ].map((String val) {
+                              return DropdownMenuItem(
+                                value: val,
+                                child: Text(
+                                  val,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          prov != ''
+                              ? DropdownButtonFormField(
+                            value: muni != '' ? muni : null,
+                            onTap: () {},
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              setState((){
+                                muni = value.toString();
+                              });
+                             // Navigator.pop(context);
+                              //_direccion(context, prov, value.toString(), '', '');
+                            },
+                            hint: Text(
+                              'Municipio',
+                            ),
+                            isExpanded: true,
+                            items: dir.ListaMunicipio(prov).map((String val) {
+                              return DropdownMenuItem(
+                                value: val,
+                                child: Text(
+                                  val,
+                                ),
+                              );
+                            }).toList(),
+                          )
+                              : SizedBox(
+                            height: 0,
+                          ),
+                          muni != ''
+                              ? DropdownButtonFormField(
+                            value: loc != '' ? loc : null,
+                            onTap: () {},
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              setState((){
+                                loc = value.toString();
+                              });
+                              //Navigator.pop(context);
+                              //_direccion(
+                              //    context, prov, muni, value.toString(), '');
+                            },
+                            hint: Text(
+                              'Localidad',
+                            ),
+                            isExpanded: true,
+                            items: dir.ListaLocalidades(prov, muni)
+                                .map((String val) {
+                              return DropdownMenuItem(
+                                value: val,
+                                child: Text(
+                                  val,
+                                ),
+                              );
+                            }).toList(),
+                          )
+                              : SizedBox(
+                            height: 0,
+                          ),
+                          if(loc != '')
+                              TextFormField(
+                            initialValue: dire != '' ? dire : null,
+                            decoration: InputDecoration(
+                              labelText: "Calle: ",
+                            ),
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              domicilio.calle = value.toString().toUpperCase();
+                            },
+                            validator: (value){
+                              if(value.toString().isEmpty)
+                                return 'Este campo es obligatorio';
+                            },
+                          ),
+                          if(loc != '') TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "Nro.: ",
+                            ),
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              domicilio.numero = int.parse(value);
+                            },
+                            validator: (value){
+                              if(value.toString().isEmpty)
+                                return 'Este campo es obligatorio';
+                            },
+                          ),
+                          if(loc != '')
+                            TextFormField(
+                            decoration: InputDecoration(
+                              labelText: "Piso: ",
+                            ),
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              domicilio.piso = value.toString().toUpperCase();
+                            },
+                          ),
+                          if(loc != '')
+                            TextFormField(
+                            decoration: InputDecoration(
+                              labelText: "Departamento: ",
+                            ),
+                            onSaved: (value) {},
+                            onChanged: (value) {
+                              domicilio.departamento = value.toString().toUpperCase();
+                            },
+                          ),
+                          if(loc != '')
+                            ButtonBar(
+                            children: [
+                              RaisedButton(
+                                onPressed: () {
                                   Navigator.pop(context);
-                                  print(domicilio.calle+
-                                  domicilio.numero.toString()+
-                                  domicilio.piso+
-                                  domicilio.departamento+
-                                  domicilio.localidad+
-                                  domicilio.municipio+
-                                  domicilio.provincia);
-                                  setState(() {});
-                                }
-                              },
-                              child: Text('Aceptar'),
-                            ),
-                          ],
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                ],
-              ),
-            ),
-          ));
+                                },
+                                child: Text('Cancelar'),
+                              ),
+                              RaisedButton(
+                                onPressed: () {
+                                  if(_keyForm.currentState!.validate()) {
+                                    domicilio.provincia = prov;
+                                    domicilio.municipio = muni;
+                                    domicilio.localidad = loc;
+                                    Navigator.pop(context);
+                                    print(domicilio.calle+
+                                        domicilio.numero.toString()+
+                                        domicilio.piso+
+                                        domicilio.departamento+
+                                        domicilio.localidad+
+                                        domicilio.municipio+
+                                        domicilio.provincia);
+                                    setState(() {});
+                                  }
+                                },
+                                child: Text('Aceptar'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              );
+            },
+          );
         });
   }
 
@@ -573,11 +571,11 @@ class _InfoPaymentState extends State<InfoPayment> {
     return t;
   }
 
-  dynamic Sumar(List<dynamic> lista, List<String> lista2) {
+  dynamic Sumar(List<dynamic> lista, List<int> lista2) {
     double total = 0;
     lista.forEach((p) {
       int i = lista.indexOf(p);
-      var t = p * int.parse(lista2[i]);
+      var t = p * lista2[i];
       total = total + t;
     });
     return total;

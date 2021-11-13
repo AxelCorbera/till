@@ -106,7 +106,7 @@ class _Scan_QRState extends State<Scan_QR> {
                         borderRadius: BorderRadius.circular(20)),
                   ),
                   Image.asset(
-                    "lib/assets/images/nenita_qr.png",
+                    "lib/assets/images/nenita_qr2.png",
                     height: 250,
                   ),
                 ],

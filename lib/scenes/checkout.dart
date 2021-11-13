@@ -673,8 +673,8 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
             stock: [],
             precio: [],
             imagen: [],
-            tamano: [],
-            color: []);
+            descuento: [],
+            tope: []);
         await _cargarCompra(resp);
         }else if(resp.status.toString() == 'rejected'){
           respuestaPago = 'rechazado';
@@ -707,8 +707,8 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
           stock: [],
           precio: [],
           imagen: [],
-          tamano: [],
-          color: []);
+          descuento: [],
+          tope: []);
       setState(() {
         //respuestaPago = 'rechazado';
         realizado1 = true;
@@ -720,7 +720,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
   Future<String> _cargarPedido() async {
     db.Datos d = new db.Datos(items: []);
     for(int i = 0; i < globals.carrito.cantidad.length; i++){
-      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i],
+      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i].toString(),
           nombre: globals.carrito.nombre[i],
           codigo: globals.carrito.codigo[i],
           precio: globals.carrito.precio[i].toString());
@@ -762,7 +762,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
     print('cargar compra 1');
     db.Datos d = new db.Datos(items: []);
     for(int i = 0; i < globals.carrito.cantidad.length; i++){
-      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i],
+      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i].toString(),
           nombre: globals.carrito.nombre[i],
           codigo: globals.carrito.codigo[i],
           precio: globals.carrito.precio[i].toString());

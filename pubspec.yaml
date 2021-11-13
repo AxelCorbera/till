@@ -74,7 +74,10 @@ flutter:
   - assets/sounds/lector.mp3
   - lib/assets/images/tillrojo.png
   - lib/assets/images/nenita.png
+  - lib/assets/images/botones-carrito.png
+  - lib/assets/images/botones-comprar.png
   - lib/assets/images/nenita_qr.png
+  - lib/assets/images/nenita_qr2.png
   - lib/assets/images/fondoClaro.jpg
   - lib/assets/images/fondoOscuro.jpg
   - lib/assets/icons/logosMetodoPago/amex.png

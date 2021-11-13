@@ -8,6 +8,9 @@ import 'package:till/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:till/pages/register.dart';
 import 'package:till/pages/scan_qr.dart';
+import 'package:till/scenes/cart.dart';
+import 'package:till/scenes/checkout.dart';
+import 'package:till/scenes/infoPayment.dart';
 
 import 'Home.dart';
 
@@ -46,6 +49,10 @@ class MyApp extends StatelessWidget {
               return Scan_QR();
             case '/Scan_Products':
               return Scan_Products();
+            case '/Cart':
+              return Cart();
+            case '/InfoPayment':
+              return InfoPayment();
             default:
               return Home();
           }

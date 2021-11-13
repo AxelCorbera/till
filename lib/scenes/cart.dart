@@ -14,6 +14,7 @@ class _CartState extends State<Cart> {
     return Scaffold(
       backgroundColor: Colors.white38,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text("Mi Carrito"),
         actions: <Widget>[
           RaisedButton.icon(
@@ -44,7 +45,7 @@ class _CartState extends State<Cart> {
                     itemCount: globals.carrito.id.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        leading: Text(globals.carrito.cantidad[index]),
+                        leading: Text(globals.carrito.cantidad[index].toString()),
                         title: Text(
                           globals.carrito.marca[index].toString() +
                               " " +
@@ -57,18 +58,18 @@ class _CartState extends State<Cart> {
                                 children: <Widget>[
                                   IconButton(
                                       onPressed: () {
-                                        int i = int.parse(
-                                            globals.carrito.cantidad[index]);
+                                        int i =
+                                            globals.carrito.cantidad[index];
                                         i++;
                                         globals.carrito.cantidad[index] =
-                                            i.toString();
+                                            i;
                                         setState(() {});
                                       },
                                       icon: Icon(Icons.add)),
                                   IconButton(
                                       onPressed: () {
-                                        int i = int.parse(
-                                            globals.carrito.cantidad[index]);
+                                        int i =
+                                            globals.carrito.cantidad[index];
                                         if (i > 1) {
                                           i--;
                                         } else {
@@ -77,7 +78,7 @@ class _CartState extends State<Cart> {
                                         }
                                         setState(() {});
                                         globals.carrito.cantidad[index] =
-                                            i.toString();
+                                            i;
                                       },
                                       icon: Icon(Icons.remove))
                                 ],
@@ -153,8 +154,8 @@ class _CartState extends State<Cart> {
                           globals.carrito.stock.removeAt(index);
                           globals.carrito.precio.removeAt(index);
                           globals.carrito.imagen.removeAt(index);
-                          globals.carrito.tamano!.removeAt(index);
-                          globals.carrito.color.removeAt(index);
+                          globals.carrito.descuento!.removeAt(index);
+                          globals.carrito.tope.removeAt(index);
                           Navigator.pop(context);
                           setState(() {});
                         },
@@ -168,11 +169,11 @@ class _CartState extends State<Cart> {
         });
   }
 
-  dynamic Sumar(List<dynamic> lista, List<String> lista2) {
+  dynamic Sumar(List<dynamic> lista, List<int> lista2) {
     double total = 0;
     lista.forEach((p) {
       int i = lista.indexOf(p);
-      var t = p * int.parse(lista2[i]);
+      double t = p * lista2[i];
       total = total + t;
     });
     return total;
