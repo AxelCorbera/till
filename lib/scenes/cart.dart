@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:till/constants/themes.dart';
 import 'package:till/globals.dart' as globals;
 
 class Cart extends StatefulWidget {
@@ -12,104 +13,184 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     total = Sumar(globals.carrito.precio, globals.carrito.cantidad);
     return Scaffold(
-      backgroundColor: Colors.white38,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text("Mi Carrito"),
-        actions: <Widget>[
-          RaisedButton.icon(
-            elevation: 0,
-            color: Colors.transparent,
-            icon: Icon(
-              editar ? Icons.done : Icons.edit,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              setState(() {
-                editar = !editar;
-              });
-            },
-            label: Text(''),
-          ),
-        ],
       ),
-      body: Column(children: <Widget>[
-        Center(
-          child: Card(
-            elevation: 5,
-            margin: EdgeInsets.all(10),
-            child: Container(
-                width: 375,
-                height: 450,
-                child: ListView.builder(
-                    itemCount: globals.carrito.id.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Text(globals.carrito.cantidad[index].toString()),
-                        title: Text(
-                          globals.carrito.marca[index].toString() +
-                              " " +
-                              globals.carrito.nombre[index].toString(),
-                          textAlign: TextAlign.start,
-                        ),
-                        trailing: editar
-                            ? ButtonBar(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  IconButton(
-                                      onPressed: () {
-                                        int i =
-                                            globals.carrito.cantidad[index];
-                                        i++;
-                                        globals.carrito.cantidad[index] =
-                                            i;
-                                        setState(() {});
-                                      },
-                                      icon: Icon(Icons.add)),
-                                  IconButton(
-                                      onPressed: () {
-                                        int i =
-                                            globals.carrito.cantidad[index];
-                                        if (i > 1) {
-                                          i--;
-                                        } else {
-                                          _eliminarArticulo(index);
-                                          setState(() {});
-                                        }
-                                        setState(() {});
-                                        globals.carrito.cantidad[index] =
-                                            i;
-                                      },
-                                      icon: Icon(Icons.remove))
-                                ],
-                              )
-                            : Text(globals.carrito.precio[index].toString()),
-                      );
-                    })),
+      body: Container(
+        constraints: BoxConstraints(
+          minHeight: 2000,
+          minWidth: double.infinity,
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("lib/assets/images/fondoClaro.jpg"),
+            fit: BoxFit.fitWidth,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Text(
-            "Total: " + total.toStringAsFixed(2),
-            style: TextStyle(
-                fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+        child: Column(children: <Widget>[
+          Center(
+            child: Card(
+              color: Theme.of(context).primaryColor,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              margin: EdgeInsets.all(10),
+              child: Container(
+                  margin: EdgeInsets.all(15),
+                  width: 315,
+                  height: 320,
+                  child: ListView.builder(
+                      itemCount: globals.carrito.id.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          child: Container(
+                            height: 60,
+                            margin: EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        globals.carrito.cantidad[index].toString(),
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        globals.carrito.nombre[index].toString(),
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(
+                                        '#descuento',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        globals.carrito.precio[index].toString(),
+                                        style: TextStyle(
+                                            color: Colores.rojo,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      })),
+            ),
           ),
-        ),
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton.icon(
-                  onPressed: total>0?() {
-                    Navigator.of(context).pushNamed('/InfoPayment');
-                  }:null,
-                  icon: Icon(Icons.navigate_next),
-                  label: Text("Finalizar compra"))
-            ],
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Total: ",
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '\$' + total.toStringAsFixed(2),
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colores.rojo,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                RaisedButton(
+                  onPressed: () {
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6)),
+                  padding: const EdgeInsets.all(0.0),
+                  child: Ink(
+                    width: 160,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: Colores.combinacion1),
+                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                    ),
+                    child: Container(
+                      constraints:
+                      const BoxConstraints(minWidth: 88.0, minHeight: 45.0),
+                      // min sizes for Material buttons
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Finalizar compra',
+                            style: TextStyle(color: Colors.white, fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        )
-      ]),
+          Expanded(
+            child: Image.asset(
+              "lib/assets/images/nenito_lista.png",
+              width: 280,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 

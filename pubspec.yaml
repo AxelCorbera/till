@@ -74,6 +74,7 @@ flutter:
   - assets/sounds/lector.mp3
   - lib/assets/images/tillrojo.png
   - lib/assets/images/nenita.png
+  - lib/assets/images/nenito_lista.png
   - lib/assets/images/botones-carrito.png
   - lib/assets/images/botones-comprar.png
   - lib/assets/images/nenita_qr.png
