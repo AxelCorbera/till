@@ -74,6 +74,7 @@ flutter:
   - assets/sounds/lector.mp3
   - lib/assets/images/tillrojo.png
   - lib/assets/images/nenita.png
+  - lib/assets/images/nenito_check.png
   - lib/assets/images/nenito_lista.png
   - lib/assets/images/botones-carrito.png
   - lib/assets/images/botones-comprar.png
@@ -81,6 +82,7 @@ flutter:
   - lib/assets/images/nenita_qr2.png
   - lib/assets/images/fondoClaro.jpg
   - lib/assets/images/fondoOscuro.jpg
+  - lib/assets/icons/avatarDocumento.png
   - lib/assets/icons/logosMetodoPago/amex.png
   - lib/assets/icons/logosMetodoPago/argencard.jpg
   - lib/assets/icons/logosMetodoPago/cabal.png
@@ -119,6 +121,9 @@ flutter:
     - family: Raleway
       fonts:
         - asset: lib/assets/fonts/Raleway/Raleway-Regular.ttf
+    - family: Manrope
+      fonts:
+        - asset: lib/assets/fonts/Manrope/Manrope-Regular.ttf
 #    - family: ArrowsIcons
 #      fonts:
 #        - asset: assets/ArrowsIcons.ttf

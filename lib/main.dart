@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:till/constants/themes.dart';
 import 'package:till/globals.dart' as globals;
+import 'package:till/pages/addcard.dart';
+import 'package:till/pages/address.dart';
+import 'package:till/pages/my_account.dart';
 import 'package:till/pages/scan_products.dart';
 import 'package:till/provider/google_sing_in.dart';
 import 'package:till/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:till/pages/register.dart';
 import 'package:till/pages/scan_qr.dart';
-import 'package:till/scenes/cart.dart';
-import 'package:till/scenes/checkout.dart';
-import 'package:till/scenes/infoPayment.dart';
+import 'package:till/pages/cart.dart';
+import 'package:till/scenes/cards.dart';
+import 'package:till/pages/checkout.dart';
+import 'package:till/pages/info_payment.dart';
+import 'package:till/scripts/mercadopago/customerJson.dart';
 
 import 'Home.dart';
 
@@ -52,7 +57,21 @@ class MyApp extends StatelessWidget {
             case '/Cart':
               return Cart();
             case '/InfoPayment':
-              return InfoPayment();
+              return Info_Payment();
+            case '/Address':
+              return addAddress();
+            case '/AddCard':
+              final arg = settings.arguments as ArgumentsAddaCard;
+              return AddCard(pago: arg.pago, total: arg.total);
+            case '/My_Account':
+              return My_Account();
+            case "/Checkout":
+              final args = settings.arguments as ArgumentosCheckout;
+              return Checkout(
+                  tarjeta: args.tarjeta,
+                  total: args.total,
+                  domicilio: args.domicilio,
+                  cuota: args.cuotas);
             default:
               return Home();
           }

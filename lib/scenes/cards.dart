@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart' as c;
 import 'package:till/globals.dart' as globals;
-import 'package:till/scenes/addcard.dart' as addcard;
+import 'package:till/pages/addcard.dart' as addcard;
 import 'package:till/scripts/request.dart';
 import 'package:till/scripts/request.dart' as request;
 

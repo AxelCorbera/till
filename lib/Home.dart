@@ -142,82 +142,85 @@ class _HomeState extends State<Home> {
                   shape: BoxShape.rectangle,
                   color: Theme.of(context).primaryColor,
                 )),
-            Container(
-              margin: const EdgeInsets.only(bottom: 0),
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Theme.of(context).primaryColor,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Stack(alignment: Alignment.center, children: <Widget>[
-                    Container(
-                      width: 65,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
+            GestureDetector(
+                onTap: () => Navigator.of(context).pushNamed('/My_Account'),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 0),
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Theme.of(context).primaryColor,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Stack(alignment: Alignment.center, children: <Widget>[
+                      Container(
+                        width: 65,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: 62,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor,
+                      Container(
+                        width: 62,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: 59,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor,
-                        image: globals.usuario!.foto!=''?
-                        DecorationImage(
-                            image:
-                            NetworkImage(globals.usuario!.foto.toString()),
-                            fit: BoxFit.contain):
-                        DecorationImage(
-                            image:
-                                AssetImage('lib/assets/images/fondoClaro.jpg'),
-                            fit: BoxFit.cover),
+                      Container(
+                        width: 59,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor,
+                          image: globals.usuario!.foto!=''?
+                          DecorationImage(
+                              image:
+                              NetworkImage(globals.usuario!.foto.toString()),
+                              fit: BoxFit.contain):
+                          DecorationImage(
+                              image:
+                                  AssetImage('lib/assets/images/fondoClaro.jpg'),
+                              fit: BoxFit.cover),
+                        ),
                       ),
-                    ),
-                  ]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            globals.usuario!.nombre.toString()==""?
-                            'Invitado':
-                            globals.usuario!.nombre.toString(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            globals.usuario!.nombre.toString()==""?
-                            '':
-                            'Mi cuenta',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 100,
-                      )
-                    ],
-                  )
-                ],
+                    ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              globals.usuario!.nombre.toString()==""?
+                              'Invitado':
+                              globals.usuario!.nombre.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              globals.usuario!.nombre.toString()==""?
+                              '':
+                              'Mi cuenta',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 100,
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             Expanded(

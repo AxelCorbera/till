@@ -16,7 +16,7 @@ class Colores {
 final ThemeData Claro = ThemeData(
     primaryColor: Colores.azulOscuro,
     secondaryHeaderColor: Colores.rojo,
-    fontFamily: 'Raleway',
+    fontFamily: 'Manrope',
     brightness: Brightness.light,
     //canvasColor: Colores.azulOscuro,
     primaryColorLight: Colores.azulOscuro,

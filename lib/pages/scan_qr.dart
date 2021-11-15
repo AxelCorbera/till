@@ -17,6 +17,7 @@ class Scan_QR extends StatefulWidget {
 class _Scan_QRState extends State<Scan_QR> {
   Comercios comercios = Comercios();
   String comercioEncontrado = '';
+
   @override
   void initState() {
     super.initState();
@@ -29,27 +30,19 @@ class _Scan_QRState extends State<Scan_QR> {
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    }
-    controller!.resumeCamera();
-  }
-
   List<int> numCompras = [];
 
   @override
   Widget build(BuildContext context) {
-    if (qr != '') _cargarListado();
+    print(globals.ingreso);
+    if (qr != '' && globals.ingreso==false) _cargarListado();
     return Scaffold(
       body: Container(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           minHeight: 2000,
           minWidth: double.infinity,
         ),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("lib/assets/images/fondoClaro.jpg"),
             fit: BoxFit.fitWidth,
@@ -62,7 +55,7 @@ class _Scan_QRState extends State<Scan_QR> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 35,
                   ),
                   qr == ''
@@ -131,15 +124,16 @@ class _Scan_QRState extends State<Scan_QR> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            CircularProgressIndicator(),
+                            const CircularProgressIndicator(),
                             if (qr != '')
                               RaisedButton(
                                   onPressed: () {
+                                    controller!.resumeCamera();
                                     setState(() {
                                       qr = '';
                                     });
                                   },
-                                  child: Text('Reintentar')),
+                                  child: const Text('Reintentar')),
                           ],
                         ),
                       ),
@@ -184,11 +178,12 @@ class _Scan_QRState extends State<Scan_QR> {
         _comericoEncontrado();
       });
     });
-    //_comericoEncontrado();
   }
 
-  void _comericoEncontrado() {
+  void _comericoEncontrado() async{
     int i = 0;
+    controller!.stopCamera();
+    comercios = await cargarComercios();
     comercios.qr!.forEach((element) {
       if (element == qr) {
         comercioEncontrado = comercios.razonsocial![i];
@@ -202,12 +197,15 @@ class _Scan_QRState extends State<Scan_QR> {
     comercios = await cargarComercios();
   }
 
-  Future<void> _cargarListado() async {
+  void _cargarListado() async {
+    if(globals.ingreso==false){
     for (int i = 0; i < comercios.qr!.length; i++) {
       if (comercios.qr![i] == qr) {
+        globals.ingreso = true;
         globals.listado = await cargarListado(comercios.razonsocial![i]);
         print(globals.listado.id!.length.toString() + 'productos cargados');
         Navigator.of(context).pushNamed('/Scan_Products');
+      }
       }
     }
   }

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:till/scenes/checkout.dart';
+import 'package:till/pages/checkout.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart';
 
 Payment paymentFromJson(String str) => Payment.fromJson(json.decode(str));

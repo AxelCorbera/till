@@ -31,33 +31,36 @@ class _Scan_ProductsState extends State<Scan_Products> {
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Quieres salir de la tienda?'),
-        content: new Text('Se perderan los productos del carro'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('Salir'),
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Quieres salir de la tienda?'),
+            content: new Text('Se perderan los productos del carro'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  globals.ingreso = false;
+                  Navigator.of(context).pushNamed('/Home');
+                  },
+                child: new Text('Salir'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('Seguir comprando'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Seguir comprando'),
-          ),
-        ],
-      ),
-    )) ?? false;
+        )) ??
+        false;
   }
 
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    }
-    controller!.resumeCamera();
-  }
+  // @override
+  // void reassemble() {
+  //   super.reassemble();
+  //   if (Platform.isAndroid) {
+  //     controller!.pauseCamera();
+  //   }
+  //   controller!.resumeCamera();
+  // }
 
   List<int> numCompras = [];
 
@@ -65,13 +68,14 @@ class _Scan_ProductsState extends State<Scan_Products> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: Scaffold(
+      child:
+    Scaffold(
         body: Container(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             minHeight: 2000,
             minWidth: double.infinity,
           ),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("lib/assets/images/fondoClaro.jpg"),
               fit: BoxFit.fitWidth,
@@ -84,7 +88,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 35,
                     ),
                     Text(
@@ -116,26 +120,26 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                           fontWeight: FontWeight.bold),
                                     )
                                   : Text(
-                                      'codigo: '+producto.codigo.toString(),
+                                      'codigo: ' + producto.codigo.toString(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Theme.of(context).primaryColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
-                              if(producto.nombre == null)
-                                   Text(
-                                      'intenta nuevamente',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                              SizedBox(
+                              if (producto.nombre == null)
+                                Text(
+                                  'intenta nuevamente',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              const SizedBox(
                                 height: 10,
                               ),
                               RaisedButton(
@@ -146,8 +150,8 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                   });
                                 },
                                 child: producto.nombre == null
-                                    ?Text('Reintentar'):
-                                Text('Cambiar'),
+                                    ? Text('Reintentar')
+                                    : Text('Cambiar'),
                               )
                             ],
                           ),
@@ -162,11 +166,13 @@ class _Scan_ProductsState extends State<Scan_Products> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).pushNamed('/Cart').then((value) => setState(() {
-                              controller!.resumeCamera();
-                            }));
-                            controller!.pauseCamera();
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed('/Cart');
+                            //     .then((value) => setState(() {
+                            //           controller!.resumeCamera();
+                            //         }));
+                            // controller!.pauseCamera();
                           },
                           child: Column(
                             children: <Widget>[
@@ -174,42 +180,50 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                 "lib/assets/images/botones-carrito.png",
                                 height: 70,
                               ),
-                              Text('Ver carrito',
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w400,
-                                fontSize: 15
-                              ),
+                              Text(
+                                'Ver carrito',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15),
                               )
                             ],
                           ),
                         ),
                         GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).pushNamed('/InfoPayment')
-                                .then((value) => setState(() {
-                              controller!.resumeCamera();
-                            }));
-                            controller!.stopCamera();
-                          },
+                          onTap: carrito.id.isNotEmpty
+                              ? () {
+                                  Navigator.of(context)
+                                      .pushNamed('/InfoPayment');
+                                  //     .then((value) => setState(() {
+                                  //           controller!.resumeCamera();
+                                  //         }));
+                                  // controller!.stopCamera();
+                                }
+                              : () {},
                           child: Column(
                             children: <Widget>[
                               Image.asset(
                                 "lib/assets/images/botones-comprar.png",
                                 height: 70,
                               ),
-                              Text('Comprar',
+                              Text(
+                                'Comprar',
                                 style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w400,
-                                    fontSize: 15
-                                ),)
+                                    color: carrito.id.length > 0
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.grey,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15),
+                              )
                             ],
                           ),
                         )
                       ],
                     ),
-                    SizedBox(height: 30,)
+                    const SizedBox(
+                      height: 30,
+                    )
                   ],
                 ),
               ),
@@ -223,7 +237,14 @@ class _Scan_ProductsState extends State<Scan_Products> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        child: _buildQrView(context), // this is my CameraPreview
+                        child:
+                         scan == true
+                             ?_buildQrView(context):
+                        const Center(
+                          child: CircularProgressIndicator(
+
+                          ),
+                        ), // this is my CameraPreview
                       ),
                     )
                     //     :Center(child: Column(
@@ -302,42 +323,45 @@ class _Scan_ProductsState extends State<Scan_Products> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (context, setState){
+          return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               content: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('¡Producto encontrado!',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold
-                          ),),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(producto.nombre.toString(),
-                        style: TextStyle(
-                          color: Colores.violeta,
-                            fontWeight: FontWeight.bold
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          '¡Producto encontrado!',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        textAlign: TextAlign.center,),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('\$ ' + producto.precio.toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          fontSize: 25
-                        ),),
+                        child: Text(
+                          producto.nombre.toString(),
+                          style: TextStyle(
+                              color: Colores.violeta,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          '\$ ' + producto.precio.toString(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text('Cuantas unidades desea llevar?'),
                       ),
                       Padding(
@@ -345,93 +369,115 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            IconButton(onPressed: (){
-                              setState((){
-                                if(cantidad>1)
-                               cantidad--;
-                              });
-                            }, icon: Icon(Icons.remove)),
-                            Text(cantidad.toString(),
-                              style: TextStyle(
-                                  fontSize: 20
-                              ),),
-                            IconButton(onPressed: (){
-                              setState((){
-                                cantidad++;
-                              });
-                            }, icon: Icon(Icons.add)),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (cantidad > 1) cantidad--;
+                                  });
+                                },
+                                icon: Icon(Icons.remove)),
+                            Text(
+                              cantidad.toString(),
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    cantidad++;
+                                  });
+                                },
+                                icon: Icon(Icons.add)),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            RaisedButton(
-                              child: Text("Cancelar"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            RaisedButton(
-                              child: Text("Agregar"),
-                              onPressed: () {
-                                bool existe = false;
-                                carrito.codigo.forEach((element) {
-                                  if(element == producto.codigo) {
-                                    existe = true;
-                                  }
-                                });
-                                if(existe == true){
-                                  int i = carrito.codigo.indexOf(producto.codigo.toString());
-                                  carrito.cantidad[i] = carrito.cantidad[i] + cantidad;
-                                  Navigator.pop(context);
-                                }else {
-                                  carrito.id.add(carrito.id.length.toString());
-                                  carrito.codigo.add(
-                                      producto.codigo.toString());
-                                  carrito.marca.add('');
-                                  carrito.nombre.add(
-                                      producto.nombre.toString());
-                                  carrito.cantidad.add(cantidad);
-                                  carrito.stock.add('100');
-                                  carrito.precio.add(
-                                      double.parse(producto.precio.toString()));
-                                  print(carrito.precio[0]);
-                                  carrito.imagen.add('');
-                                  carrito.descuento!.add(
-                                      producto.descuento.toString());
-                                  carrito.tope.add(producto.tope.toString());
-                                  Navigator.pop(context);
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          FlatButton(
+                            child: Text("Cancelar",
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor
+                              ),),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              bool existe = false;
+                              carrito.codigo.forEach((element) {
+                                if (element == producto.codigo) {
+                                  existe = true;
                                 }
-                                // if (_formKey.currentState!.validate()) {
-                                //   _formKey.currentState!.save();
-                                //   carrito.id.add(carrito.id.length.toString());
-                                //   carrito.codigo.add(producto.codigo.toString());
-                                //   carrito.marca.add('');
-                                //   carrito.nombre.add(producto.nombre.toString());
-                                //   carrito.cantidad.add(cantidad.toString());
-                                //   carrito.stock.add('100');
-                                //   carrito.precio.add(producto.precio as double);
-                                //   print(carrito.precio[0]);
-                                //   carrito.imagen.add('');
-                                //   carrito.descuento!.add(producto.descuento.toString());
-                                //   carrito.tope.add(producto.tope.toString());
-                                //   Navigator.pop(context);
-                                // }
-                              },
+                              });
+                              if (existe == true) {
+                                int i = carrito.codigo
+                                    .indexOf(producto.codigo.toString());
+                                carrito.cantidad[i] =
+                                    carrito.cantidad[i] + cantidad;
+                                Navigator.pop(context);
+                              } else {
+                                carrito.id.add(carrito.id.length.toString());
+                                carrito.codigo.add(producto.codigo.toString());
+                                carrito.marca.add('');
+                                carrito.nombre.add(producto.nombre.toString());
+                                carrito.cantidad.add(cantidad);
+                                carrito.stock.add('100');
+                                carrito.precio
+                                    .add(double.parse(producto.precio.toString()));
+                                print(carrito.precio[0]);
+                                carrito.imagen.add('');
+                                carrito.descuento!
+                                    .add(producto.descuento.toString());
+                                carrito.tope.add(producto.tope.toString());
+                                Navigator.pop(context);
+                                _actualizar();
+                              }
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6)),
+                            padding: const EdgeInsets.all(0.0),
+                            child: Ink(
+                              width: 100,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.topRight,
+                                    colors: Colores.combinacion1),
+                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                              ),
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                    minWidth: 88.0, minHeight: 45.0),
+                                // min sizes for Material buttons
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Aceptar',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
             );
-            }
-          );
+          });
         });
   }
 
@@ -444,9 +490,15 @@ class _Scan_ProductsState extends State<Scan_Products> {
     }
   }
 
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
+  // @override
+  // void dispose() {
+  //   controller?.dispose();
+  //   super.dispose();
+  // }
+
+  void _actualizar() {
+    setState(() {
+
+    });
   }
 }

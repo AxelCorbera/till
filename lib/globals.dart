@@ -6,6 +6,8 @@ import 'package:till/scripts/request.dart';
 
 Listado listado = Listado();
 
+bool ingreso = false;
+
 Usuario? usuario =
     Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
 
