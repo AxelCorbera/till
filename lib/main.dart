@@ -4,7 +4,9 @@ import 'package:till/constants/themes.dart';
 import 'package:till/globals.dart' as globals;
 import 'package:till/pages/addcard.dart';
 import 'package:till/pages/address.dart';
+import 'package:till/pages/address_info.dart';
 import 'package:till/pages/my_account.dart';
+import 'package:till/pages/my_information.dart';
 import 'package:till/pages/scan_products.dart';
 import 'package:till/provider/google_sing_in.dart';
 import 'package:till/pages/login.dart';
@@ -65,6 +67,10 @@ class MyApp extends StatelessWidget {
               return AddCard(pago: arg.pago, total: arg.total);
             case '/My_Account':
               return My_Account();
+            case '/My_Information':
+              return My_Information();
+            case '/Address_Info':
+              return Address_Info();
             case "/Checkout":
               final args = settings.arguments as ArgumentosCheckout;
               return Checkout(

@@ -96,6 +96,7 @@ class _my_AccountState extends State<My_Account> {
               Center(child: Column(
                 children: <Widget>[
                   ListTile(
+                    onTap: () => Navigator.of(context).pushNamed('/My_Information'),
                     title: Text('Mis datos',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
@@ -124,6 +125,7 @@ class _my_AccountState extends State<My_Account> {
                     endIndent: 10,
                   ),
                   ListTile(
+                    onTap: () => Navigator.of(context).pushNamed('/Address_Info'),
                     title: Text('Datos de facturacion',
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
