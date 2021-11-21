@@ -335,69 +335,6 @@ Future<String> Registrarse(
   }
 }
 
-Future<List<String>> BuscarCategoria(String categoria) async {
-  List<String> lista;
-  Map map = new Map<String, dynamic>();
-  print(categoria);
-  if (categoria != "alimentoPerro" && categoria != "alimentoGato") {
-    map['categoria'] = categoria.toLowerCase();
-  } else {
-    map['categoria'] = categoria;
-  }
-
-  final response = await http.post(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/buscarMarca.php?'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-    body: map,
-  );
-  print(response.statusCode);
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    //DEVUELVE ARRAY
-
-    return Categorias.fromJson(jsonDecode(response.body)).cate;
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Failed to create album.');
-  }
-}
-//http://wh534614.ispot.cc/mypetshop/buscarMarcas.php?categoria=
-
-Future<Marcas> Buscaritems(
-    String categoria, String marca, String busqueda) async {
-  Map map = new Map<String, dynamic>();
-  print(categoria);
-  if (categoria != "alimentoPerro" && categoria != "alimentoGato") {
-    map['categoria'] = categoria.toLowerCase();
-    map['marca'] = marca;
-  } else {
-    map['categoria'] = categoria;
-    map['marca'] = marca;
-  }
-
-  final response = await http.post(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/consultaItems.php?'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-    body: map,
-  );
-  print(response.statusCode);
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    //DEVUELVE ARRAY
-
-    return Marcas.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Failed to create album.');
-  }
-}
-
 Future<db.Compras> BuscarCompras(
     String idUsuario) async {
   Map map = new Map<String, dynamic>();
@@ -420,78 +357,6 @@ Future<db.Compras> BuscarCompras(
     // then throw an exception.
     throw Exception('Fallo la busqueda de compras.');
   }
-}
-
-Future<Mascotas> BuscarMascotas(
-    String idUsuario) async {
-
-  final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/consultarMascotas.php?id=$idUsuario'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-  );
-  print('http://wh534614.ispot.cc/mypetshop/flutter/consultarMascotas.php?id=$idUsuario');
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    if(response.body.isEmpty){
-      return Mascotas(items: []);
-    }else {
-      return Mascotas.fromJson(jsonDecode(response.body));
-    }
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Fallo la busqueda de Mascotas.');
-  }
-}
-
-Future<Historial> BuscarHistorial(
-    String idUsuario) async {
-
-  final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/consultarHistorial.php?id=$idUsuario'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-  );
-
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    //DEVUELVE ARRAY
-
-    return Historial.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Fallo la busqueda de Mascotas.');
-  }
-}
-
-Future<String> actualizarMascotas(String customer, String mascotas) async {
-  Map datos = new Map<String, String>();
-  datos["id"] = customer;
-  datos["mascotas"] = mascotas;
-
-  final response = await http.post(
-    Uri.parse(
-        'http://wh534614.ispot.cc/mypetshop/flutter/actualizarMascotas.php?'),
-    body: datos,
-  );
-  return response.body.toString();
-}
-
-Future<String> actualizarHistorial(String customer, String historial) async {
-  Map datos = new Map<String, String>();
-  datos["id"] = customer;
-  datos["historial"] = historial;
-
-  final response = await http.post(
-    Uri.parse(
-        'http://wh534614.ispot.cc/mypetshop/flutter/actualizarHistorial.php?'),
-    body: datos,
-  );
-  return response.body.toString();
 }
 
 Future<FotoMascotas> BuscarFotoMascotas(
@@ -598,26 +463,26 @@ Future<List<Cards>> BuscarTarjetas(String idCustomer) async {
   }
 }
 
-Future<FindCustomer> BuscarCustomer(String email) async {
-  final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/buscarcustomer.php?comercio=MoritasPet&'
-        'email=$email'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-  );
-  print(response.statusCode);
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    // If the server did return a 200 CREATED response,
-    // then parse the JSON.
-    print('respuesta ' + jsonDecode(response.body).toString());
-    return findCustomerFromJson(response.body);
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Failed to create album.');
-  }
-}
+// Future<FindCustomer> BuscarCustomer(String email) async {
+//   final response = await http.get(
+//     Uri.parse('http://wh534614.ispot.cc/buscarcustomer.php?comercio=MoritasPet&'
+//         'email=$email'),
+//     headers: <String, String>{
+//       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+//     },
+//   );
+//   print(response.statusCode);
+//   if (response.statusCode == 200 || response.statusCode == 201) {
+//     // If the server did return a 200 CREATED response,
+//     // then parse the JSON.
+//     print('respuesta ' + jsonDecode(response.body).toString());
+//     return findCustomerFromJson(response.body);
+//   } else {
+//     // If the server did not return a 201 CREATED response,
+//     // then throw an exception.
+//     throw Exception('Failed to create album.');
+//   }
+//}
 
 Future<Cards> EliminarTarjeta(String idCustomer, String idTarjeta) async {
   while (globals.accessToken == "") {
@@ -753,12 +618,13 @@ Future<cuotas.Cuotas> Cuotas(String bin, String total) async {
   }
 }
 
-Future<Credenciales> Claves(String usuario) async {
+
+Future<Credenciales> Claves(String usuario) async { ///// TILL
   Map map = new Map<String, dynamic>();
   map['usuario'] = usuario;
 
   final response = await http.post(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/credenciales.php?'),
+    Uri.parse('http://wh534614.ispot.cc/credenciales.php?'),
     headers: <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     },

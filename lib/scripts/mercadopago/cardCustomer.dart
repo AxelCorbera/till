@@ -1,100 +1,75 @@
 // To parse this JSON data, do
 //
-//     final cards = cardsFromJson(jsonString);
+//     final cardCustomer = cardCustomerFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Cards> cardsFromJson(dynamic str) => List<Cards>.from(json.decode(str).map(Closure: (dynamic) => Cards.fromJson(dynamic)));
+CardCustomer cardCustomerFromJson(String str) => CardCustomer.fromJson(json.decode(str));
 
-dynamic cardsToJson(List<Cards> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String cardCustomerToJson(CardCustomer data) => json.encode(data.toJson());
 
-class Cards {
-  Cards({
-    this.id,
+class CardCustomer {
+  CardCustomer({
+    this.cardholder,
+    this.customerId,
     this.dateCreated,
     this.dateLastUpdated,
-    this.customerId,
     this.expirationMonth,
     this.expirationYear,
     this.firstSixDigits,
+    this.id,
+    this.issuer,
     this.lastFourDigits,
     this.paymentMethod,
     this.securityCode,
-    this.issuer,
-    this.cardholder,
     this.userId,
-    this.liveMode,
-    this.paging,
-    this.results,
-    this.message,
-    this.error,
-    this.status,
-    this.cause
   });
 
-  Paging? paging;
-  List<dynamic>? results;
-  String? id;
+  Cardholder? cardholder;
+  String? customerId;
   DateTime? dateCreated;
   DateTime? dateLastUpdated;
-  String? customerId;
   int? expirationMonth;
   int? expirationYear;
   String? firstSixDigits;
+  String? id;
+  Issuer? issuer;
   String? lastFourDigits;
   PaymentMethod? paymentMethod;
   SecurityCode? securityCode;
-  Issuer? issuer;
-  Cardholder? cardholder;
   String? userId;
-  bool? liveMode;
-  String? message;
-  String? error;
-  String? status;
-  List<List<dynamic>>? cause;
 
-
-  factory Cards.fromJson(Map<String, dynamic> json) => Cards(
-    id: json["id"],
+  factory CardCustomer.fromJson(Map<String, dynamic> json) => CardCustomer(
+    cardholder: Cardholder.fromJson(json["cardholder"]),
+    customerId: json["customer_id"],
     dateCreated: DateTime.parse(json["date_created"]),
     dateLastUpdated: DateTime.parse(json["date_last_updated"]),
-    customerId: json["customer_id"],
     expirationMonth: json["expiration_month"],
     expirationYear: json["expiration_year"],
     firstSixDigits: json["first_six_digits"],
+    id: json["id"],
+    issuer: Issuer.fromJson(json["issuer"]),
     lastFourDigits: json["last_four_digits"],
     paymentMethod: PaymentMethod.fromJson(json["payment_method"]),
     securityCode: SecurityCode.fromJson(json["security_code"]),
-    issuer: Issuer.fromJson(json["issuer"]),
-    cardholder: Cardholder.fromJson(json["cardholder"]),
     userId: json["user_id"],
-    liveMode: json["live_mode"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "date_created": dateCreated!.toIso8601String(),
-    "date_last_updated": dateLastUpdated!.toIso8601String(),
+    "cardholder": cardholder!.toJson(),
     "customer_id": customerId,
+    "date_created": dateCreated.toString(),
+    "date_last_updated": dateLastUpdated.toString(),
     "expiration_month": expirationMonth,
     "expiration_year": expirationYear,
     "first_six_digits": firstSixDigits,
+    "id": id,
+    "issuer": issuer!.toJson(),
     "last_four_digits": lastFourDigits,
     "payment_method": paymentMethod!.toJson(),
     "security_code": securityCode!.toJson(),
-    "issuer": issuer!.toJson(),
-    "cardholder": cardholder!.toJson(),
     "user_id": userId,
-    "live_mode": liveMode,
   };
-}
-
-class Paging{
-  Paging({this.total, this.limit,this.offset});
-
-  String? limit;
-  String? offset;
-  String? total;
 }
 
 class Cardholder {

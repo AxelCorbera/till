@@ -6,6 +6,7 @@ import 'package:till/pages/checkout.dart';
 import 'package:till/scenes/components/direccion.dart';
 import 'package:till/scripts/mercadopago/cuotasJson.dart';
 import 'package:till/scripts/mercadopago/mercadoPago.dart';
+import 'package:till/scripts/mercadopago/cardsJson.dart';
 
 class Info_Payment extends StatefulWidget {
   @override
@@ -13,17 +14,30 @@ class Info_Payment extends StatefulWidget {
 }
 
 class _InfoPaymentState extends State<Info_Payment> {
+  List<Cards> tarjetas = [];
   bool efectivo = false;
   bool tarjeta = false;
   bool cuotas = false;
   double total = 0;
   String cuotaSeleccionada = '';
-  Domicilio domicilio = new Domicilio('', '', '', '', 0, '', '');
+  Domicilio domicilio = Domicilio(
+      globals.usuario!.provincia.toString(),
+      globals.usuario!.municipio.toString(),
+      globals.usuario!.localidad.toString(),
+      globals.usuario!.calle.toString(),
+      int.parse(globals.usuario!.numero.toString()),
+      globals.usuario!.piso.toString(),
+      globals.usuario!.departamento.toString());
   Direcciones dir = new Direcciones();
   addcard.TarjetaPago tarjetaSeleccionada =
       new addcard.TarjetaPago(DatosTarjeta(), '', Cuotas());
   GlobalKey<FormState> _keyForm = GlobalKey();
   Widget build(BuildContext context) {
+    tarjetas.clear();
+    globals.cards.forEach((element) {
+      tarjetas.add(element as Cards);
+    });
+
     total = Sumar(globals.carrito.precio, globals.carrito.cantidad);
     return Scaffold(
         appBar: AppBar(
@@ -55,14 +69,14 @@ class _InfoPaymentState extends State<Info_Payment> {
                       alignment: Alignment.centerLeft,
                       width: 280,
                       child: Text(
-                        'Domicilio',
+                        'Domicilio de facturacion',
                         style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 18),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
                     Container(
@@ -108,100 +122,46 @@ class _InfoPaymentState extends State<Info_Payment> {
                                 fontSize: 18),
                           )),
                     ),
-                    Container(
-                      width: 280,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RaisedButton(
-                              onPressed: () {
-                                efectivo = true;
-                                tarjeta = false;
-                                cuotas = false;
-                                tarjetaSeleccionada = new addcard.TarjetaPago(
-                                    DatosTarjeta(), '', Cuotas());
+                    tarjetas.length > 0
+                        ? Container(
+                            height: 60,
+                            width: 280,
+                            child: DropdownButtonFormField(
+                              value: tarjetas.length > 0 ? tarjetas[0] : null,
+                              onTap: () {},
+                              onSaved: (value) {},
+                              onChanged: (value) {
                                 setState(() {});
                               },
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6)),
-                              padding: const EdgeInsets.all(0.0),
-                              child: Ink(
-                                width: 100,
-                                height: 35,
-                                decoration: efectivo == true
-                                    ? BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                      colors: Colores.combinacion1),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(6)),
-                                )
-                                    : null,
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                      minWidth: 88.0, minHeight: 45.0),
-                                  // min sizes for Material buttons
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Efectivo',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              hint: const Text(
+                                'Seleccioná una tarjeta',
                               ),
+                              isExpanded: true,
+                              items: tarjetas.map((Cards val) {
+                                return DropdownMenuItem(
+                                  value: val,
+                                  child: Text(
+                                    val.id.toString() +
+                                        ' terminada en ' +
+                                        val.lastFourDigits.toString(),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                            RaisedButton(
-                              onPressed: () {
-                                _mostrarTarjetas();
+                          )
+                        : Container(
+                            width: 280,
+                            child: RaisedButton(
+                              onPressed: () async {
+                               _nuevaTarjeta();
                               },
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6)),
-                              padding: const EdgeInsets.all(0.0),
-                              child: Ink(
-                                width: 150,
-                                height: 35,
-                                decoration:
-                                tarjetaSeleccionada.idTarjeta != '0' &&
-                                    tarjetaSeleccionada.idTarjeta != ''
-                                    ? BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                      colors: Colores.combinacion1),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(6)),
-                                )
-                                    : null,
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                      minWidth: 88.0, minHeight: 45.0),
-                                  // min sizes for Material buttons
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Débito/Credito',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              child: Text(
+                                'Nueva tarjeta',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
                               ),
                             ),
-                          ]),
-                    ),
+                          ),
                     tarjetaSeleccionada.datosTarj.numeros != null &&
                             tarjetaSeleccionada.idTarjeta != '0'
                         ? Center(
@@ -219,7 +179,8 @@ class _InfoPaymentState extends State<Info_Payment> {
                                       child: Text(
                                         'Cuotas',
                                         style: TextStyle(
-                                            color: Theme.of(context).primaryColor,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18),
                                       )),
@@ -645,13 +606,13 @@ class _InfoPaymentState extends State<Info_Payment> {
                                   width: 150,
                                   height: 35,
                                   decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              colors: Colores.combinacion1),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(6)),
-                                        ),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.bottomLeft,
+                                        end: Alignment.topRight,
+                                        colors: Colores.combinacion1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(6)),
+                                  ),
                                   child: Container(
                                     constraints: const BoxConstraints(
                                         minWidth: 88.0, minHeight: 45.0),
@@ -725,6 +686,17 @@ class _InfoPaymentState extends State<Info_Payment> {
   }
 
   void _actualizar() {
+    setState(() {});
+  }
+
+  void _nuevaTarjeta() async{
+    tarjetaSeleccionada = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => addcard.AddCard(
+              pago: false, total: total)),
+    );
+    //Navigator.pop(context);
     setState(() {
 
     });

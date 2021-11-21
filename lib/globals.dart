@@ -10,7 +10,7 @@ bool ingreso = false;
 
 Usuario? usuario =
     Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "","","",
-    "","","","");
+    "0","","","");
 
 bool login = false;
 

@@ -6,7 +6,7 @@ import 'package:till/globals.dart' as globals;
 import 'package:till/pages/addcard.dart';
 import 'package:till/pages/info_payment.dart';
 import 'package:till/scripts/mercadopago/json/baseDatos.dart' as db;
-import 'package:till/scripts/mercadopago/json/cardsJson.dart' as card;
+import 'package:till/scripts/mercadopago/cardsJson.dart' as card;
 import 'package:till/scripts/mercadopago/payment.dart';
 import 'package:till/scripts/mercadopago/responsePayment2.dart'as payment;
 import 'package:till/scripts/request.dart' as request;
@@ -69,216 +69,227 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
           ),
         ),
         child:
-          Container(
-            width: 380,
-            margin: EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    '¡Ultimo paso!',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Text(
-                      'Direccion:',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          //color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Text(widget.domicilio.calle +
-                        ' ' +
-                        widget.domicilio.numero.toString() +
-                        ' ' +
-                        widget.domicilio.piso +
-                        ' ' +
-                        widget.domicilio.departamento +
-                        ', ' +
-                        widget.domicilio.localidad +
-                        ', ' +
-                        widget.domicilio.municipio,
-                      style: TextStyle(
-                          color: Colores.violeta,
-                          fontWeight: FontWeight.bold
-                      ),),
-                  ),
-                ),
-                new Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Text(
-                      'Forma de pago:',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          //color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: widget.tarjeta.datosTarj.numeros != null
-                        ? Column(
-                            children: [
-                              Text(widget.tarjeta.cuotasTarj
-                                        .paymentMethodId
-                                        .toString() +
-                                    " TERMINADA EN " +
-                                    widget.tarjeta.datosTarj.numeros
-                                        .toString()
-                                        .substring(12, 16),
-                                style: TextStyle(
-                                    color: Colores.violeta,
-                                    fontWeight: FontWeight.bold
-                                ),),
-                              if(widget.cuota != '1')
-                                  _cuotasMonto()
-                            ],
-                          )
-                        : Container(
-                        child: Text('EFECTIVO',
-                        style: TextStyle(
-                          color: Colores.violeta,
-                          fontWeight: FontWeight.bold
-                        ),)
-                    ),
-
-                  ),
-                ),
-                new Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Text(
-                      'Telefono: *',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          //color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    width: 300,
-                    child: Form(
-                      key: _keyform,
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          telefono = value;
-                        },
-                        validator: (value) {
-                          if (value.toString().isEmpty)
-                            return 'El campo es obligatorio';
-                        },
-                        decoration: const InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
+          Stack(
+            children: [
+              Container(
+                width: 350,
+                margin: EdgeInsets.all(35),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 25.0),
+                      child: Center(
+                        child: Text(
+                          '¡Ultimo paso!',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                new Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total:',
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Text(
+                          'Direccion de facturacion:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               //color: Colors.black,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        _total()
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Center(
-                  child: RaisedButton(
-                    onPressed: () {
-                    },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.all(0.0),
-                    child: Ink(
-                      width: 350,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: Colores.combinacion1),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        constraints:
-                        const BoxConstraints(minWidth: 88.0, minHeight: 45.0),
-                        // min sizes for Material buttons
-                        alignment: Alignment.center,
+                        child: widget.domicilio.calle != ''? Text(widget.domicilio.calle +
+                            ' ' +
+                            widget.domicilio.numero.toString() +
+                            ' ' +
+                            widget.domicilio.piso +
+                            ' ' +
+                            widget.domicilio.departamento +
+                            ', ' +
+                            widget.domicilio.localidad +
+                            ', ' +
+                            widget.domicilio.municipio,
+                          style: TextStyle(
+                              color: Colores.violeta,
+                              fontWeight: FontWeight.bold
+                          ),):
+                        Text('NO',
+                          style: TextStyle(
+                              color: Colores.violeta,
+                              fontWeight: FontWeight.bold
+                          ),),
+                      ),
+                    ),
+                    new Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Text(
+                          'Forma de pago:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              //color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: widget.tarjeta.datosTarj.numeros != null
+                            ? Column(
+                                children: [
+                                  Text(widget.tarjeta.cuotasTarj
+                                            .paymentMethodId
+                                            .toString() +
+                                        " TERMINADA EN " +
+                                        widget.tarjeta.datosTarj.numeros
+                                            .toString()
+                                            .substring(12, 16),
+                                    style: TextStyle(
+                                        color: Colores.violeta,
+                                        fontWeight: FontWeight.bold
+                                    ),),
+                                  if(widget.cuota != '1')
+                                      _cuotasMonto()
+                                ],
+                              )
+                            : Container(
+                            child: Text('EFECTIVO',
+                            style: TextStyle(
+                              color: Colores.violeta,
+                              fontWeight: FontWeight.bold
+                            ),)
+                        ),
+
+                      ),
+                    ),
+                    new Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Text(
+                          'Telefono: *',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              //color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 300,
+                        child: Form(
+                          key: _keyform,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              telefono = value;
+                            },
+                            validator: (value) {
+                              if (value.toString().isEmpty)
+                                return 'El campo es obligatorio';
+                            },
+                            decoration: const InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    new Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Pagar',
-                              style: TextStyle(color: Colors.white, fontSize: 20),
+                              'Total:',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  //color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                             ),
+                            _total()
                           ],
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Center(
+                      child: RaisedButton(
+                        onPressed: () {
+                          if(_keyform.currentState!.validate()){
+                            _pagar();
+                          }
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(0.0),
+                        child: Ink(
+                          width: 350,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.bottomLeft,
+                                end: Alignment.topRight,
+                                colors: Colores.combinacion1),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: Container(
+                            constraints:
+                            const BoxConstraints(minWidth: 88.0, minHeight: 45.0),
+                            // min sizes for Material buttons
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Pagar',
+                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              _respuestaPago1(),
+              _respuestaPago2(),
+            ],
           ),
-
-
-          //_respuestaPago1(),
-          //_respuestaPago2(),
-
-
       ),
     );
   }
 
   Widget _respuestaPago1() {
     Widget w1 = Center(
-        child: new AnimatedContainer(
+        child: AnimatedContainer(
       width: realizado1
           ? realizado2
               ? MediaQuery.of(context).size.width
@@ -308,7 +319,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            new AnimatedContainer(
+            AnimatedContainer(
               transform: anim1
                   ? Matrix4.translationValues(
                       0, -(MediaQuery.of(context).size.height / 3.45), 0)
@@ -316,7 +327,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
               child: realizado1
                   ? Column(
                       children: [
-                        new AnimatedContainer(
+                        AnimatedContainer(
                           width: realizado1 ? 100 : 101,
                           height: realizado1 ? 100 : 101,
                           duration: Duration(seconds: 1),
@@ -327,7 +338,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
                                       : respuestaPago == 'rechazado'
                                           ? Icons.cancel_outlined
                                           : Icons.error_outline,
-                                  color: Theme.of(context).secondaryHeaderColor,
+                                  color: Colors.white,
                                   size: 70,
                                 )
                               : SizedBox(),
@@ -339,12 +350,12 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
                         Text(
                           'Pago $respuestaPago',
                           style: anim2
-                              ? TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
+                              ? const TextStyle(
+                                  color: Colors.white,
                                   fontSize: 25,
                                   //fontWeight: FontWeight.bold
                                 )
-                              : TextStyle(
+                              : const TextStyle(
                                   color: Colors.transparent,
                                   fontSize: 25,
                                   //fontWeight: FontWeight.bold
@@ -383,8 +394,8 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
     Widget _datos = respuestaPago == 'aprobado'?Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Su pedido fue realizado!',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -399,8 +410,8 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
                 fontSize: 15
             ),),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Podras ver el estado del pedido en la pantalla de inicio.',
             style: TextStyle(
                 fontSize: 15,
@@ -411,7 +422,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
           icon: Icon(Icons.sms),
           onPressed: (){
             _consulta(ticket);
-          }, label: Text(''
+          }, label: const Text(''
             'Comunicate con nuestro \n WhatsApp para coordinar la entrega.',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -422,9 +433,9 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
             onPressed: () {
               Navigator.of(context).pushNamed('/Home');
             },
-            child: Text('Continuar')),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+            child: const Text('Continuar')),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Gracias por elegirnos!',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -437,16 +448,16 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
     Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Algo salio mal.',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20
             ),),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Revisa los datos de tu tarjeta y volve a intentarlo.',
             style: TextStyle(
               fontSize: 15,
@@ -462,31 +473,31 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
             onPressed: () {
               Navigator.of(context).pushNamed('/Home');
             },
-            child: Text('Continuar')),
-        SizedBox(height: 100,)
+            child: const Text('Continuar')),
+        const SizedBox(height: 100,)
       ],
     ):
     Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Procesando el pago.',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20
             ),),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('El pago se esta procesando. Esto puede demorar unos minutos.',
             style: TextStyle(
               fontSize: 15,
             ),
             textAlign: TextAlign.center,),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text('Puedes ver el estado del pago en el inicio.',
             style: TextStyle(
               fontSize: 15,
@@ -511,7 +522,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
         ? Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              new AnimatedContainer(
+              AnimatedContainer(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 1.6,
                 color: anim2 ? Colors.white : Colors.transparent,
@@ -521,11 +532,11 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
                         color: Colors.transparent,
                         child: anim2 ? _datos : null)),
                 onEnd: () {},
-                duration: Duration(seconds: 1),
+                duration: const Duration(seconds: 1),
               ),
             ],
           )
-        : SizedBox();
+        : const SizedBox();
     return w2;
   }
 
@@ -546,7 +557,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
         style: TextStyle(
           color: Theme.of(context).primaryColor,
           //color: Colors.black,
-          fontSize: 20,
+          fontSize: 23,
           //fontWeight: FontWeight.bold
         ),
       );
@@ -555,7 +566,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
         '\$ ' + widget.total.toString(),
         style: TextStyle(
           //color: Colors.black,
-          fontSize: 20,
+          fontSize: 23,
           //fontWeight: FontWeight.bold
         ),
       );
@@ -604,25 +615,25 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
       Payment pago = new Payment();
       pago.additionalInfo = AdditionalInfo();
       pago.additionalInfo!.items = [];
-      Item item = new Item(
+      Item item = Item(
           id: 'PR0001',
-          title: 'Moritas PetShop',
+          title: 'Till',
           //pictureUrl: '',
-          categoryId: 'Pets',
+          categoryId: 'Shop',
           quantity: 1,
           unitPrice: widget.total);
       pago.additionalInfo!.items!.add(item);
-      pago.additionalInfo!.payer = new AdditionalInfoPayer();
+      pago.additionalInfo!.payer = AdditionalInfoPayer();
       pago.additionalInfo!.payer!.firstName =
           globals.usuario!.nombre.toString();
       pago.additionalInfo!.payer!.lastName =
           globals.usuario!.apellido.toString();
-      pago.additionalInfo!.payer!.phone = new Phone();
-      pago.additionalInfo!.payer!.phone!.areaCode = 11;
+      pago.additionalInfo!.payer!.phone = Phone();
+      pago.additionalInfo!.payer!.phone!.areaCode = 011;
       pago.additionalInfo!.payer!.phone!.number = telefono;
-      pago.additionalInfo!.payer!.address = new Address();
-      pago.additionalInfo!.shipments = new Shipments();
-      pago.additionalInfo!.shipments!.receiverAddress = new ReceiverAddress();
+      pago.additionalInfo!.payer!.address = Address();
+      pago.additionalInfo!.shipments = Shipments();
+      pago.additionalInfo!.shipments!.receiverAddress = ReceiverAddress();
       pago.additionalInfo!.shipments!.receiverAddress!.zipCode = '';
       pago.additionalInfo!.shipments!.receiverAddress!.stateName =
           widget.domicilio.provincia;
@@ -651,12 +662,12 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
       //pago.date_of_expiration = '2021-07-10T14:47:58.000Z';
       pago.description = 'Pago por productos';
       pago.differential_pricing_id = 0;
-      pago.externalReference = 'Moritas Petshop';
+      pago.externalReference = 'TillApp';
       pago.installments = int.parse(widget.cuota);
       //pago.issuer_id = null;
-      pago.metadata = new Metadata();
+      pago.metadata = Metadata();
       //pago.notification_url = 'https://app-till.com/index.php/contact/';
-      pago.order = new Order();
+      pago.order = Order();
       pago.order!.type = 'mercadopago';
       pago.order!.id = 1;
       pago.payer = PaymentPayer();
@@ -664,13 +675,13 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
       pago.payer!.type = 'customer';
       pago.payer!.id = globals.usuario!.id_customer_mp;
       pago.payer!.email = globals.usuario!.correo;
-      pago.payer!.identification = new Identification();
+      pago.payer!.identification = Identification();
       pago.payer!.identification!.type = widget.tarjeta.datosTarj.docTipo;
       pago.payer!.identification!.number = widget.tarjeta.datosTarj.docNum;
       pago.payer!.first_name = globals.usuario!.nombre;
       pago.payer!.last_name = globals.usuario!.apellido;
       pago.paymentMethodId = widget.tarjeta.cuotasTarj.paymentMethodId;
-      pago.statement_descriptor = 'Moritas Petshop';
+      pago.statement_descriptor = 'TillAPP';
       pago.token = widget.tarjeta.idTarjeta;
       pago.transactionAmount = widget.total;
 
@@ -739,13 +750,13 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
   Future<String> _cargarPedido() async {
     db.Datos d = new db.Datos(items: []);
     for(int i = 0; i < globals.carrito.cantidad.length; i++){
-      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i].toString(),
+      db.Item item = db.Item(cantidad: globals.carrito.cantidad[i].toString(),
           nombre: globals.carrito.nombre[i],
           codigo: globals.carrito.codigo[i],
           precio: globals.carrito.precio[i].toString());
       d.items.add(item);
     }
-    db.Compra c = new db.Compra(
+    db.Compra c = db.Compra(
         id: '',
         fecha: DateTime.now().toString(),
         hora: '',
@@ -779,16 +790,16 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
   Future<String> _cargarCompra(payment.ResponsePayment2 pago) async {
 
     print('cargar compra 1');
-    db.Datos d = new db.Datos(items: []);
+    db.Datos d = db.Datos(items: []);
     for(int i = 0; i < globals.carrito.cantidad.length; i++){
-      db.Item item = new db.Item(cantidad: globals.carrito.cantidad[i].toString(),
+      db.Item item = db.Item(cantidad: globals.carrito.cantidad[i].toString(),
           nombre: globals.carrito.nombre[i],
           codigo: globals.carrito.codigo[i],
           precio: globals.carrito.precio[i].toString());
       d.items.add(item);
     }
     print('cargar compra 2');
-    db.Compra c = new db.Compra(
+    db.Compra c = db.Compra(
         id: '',
         fecha: DateTime.now().toString(),
         hora: '',

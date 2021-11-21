@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:till/scripts/mercadopago/cardCustomer.dart';
+
 CreateCustomer createCustomerFromJson(String str) => CreateCustomer.fromJson(json.decode(str));
 
 String createCustomerToJson(CreateCustomer data) => json.encode(data.toJson());
@@ -117,7 +119,7 @@ class Identification {
   });
 
   String? type;
-  int? number;
+  String? number;
 
   factory Identification.fromJson(Map<String, dynamic> json) => Identification(
     type: json["type"],
@@ -152,8 +154,8 @@ class Phone {
     this.number,
   });
 
-  int? areaCode;
-  int? number;
+  String? areaCode;
+  String? number;
 
   factory Phone.fromJson(Map<String, dynamic> json) => Phone(
     areaCode: json["area_code"],
@@ -231,15 +233,18 @@ class Result {
     this.liveMode,
     this.metadata,
     this.phone,
+   // this.dateRegistered,
+    this.description
   });
 
   Address? address;
   List<Metadata>? addresses;
-  List<Metadata>? cards;
+  List<CardCustomer>? cards;
   DateTime? dateCreated;
   DateTime? dateLastUpdated;
+  //DateTime? dateRegistered;
   String? defaultAddress;
-  int? defaultCard;
+  String? defaultCard;
   String? email;
   String? firstName;
   String? id;
@@ -248,13 +253,15 @@ class Result {
   bool? liveMode;
   Metadata? metadata;
   Phone? phone;
+  String? description;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
     address: Address.fromJson(json["address"]),
     addresses: List<Metadata>.from(json["addresses"].map((x) => Metadata.fromJson(x))),
-    cards: List<Metadata>.from(json["cards"].map((x) => Metadata.fromJson(x))),
+    cards: List<CardCustomer>.from(json["cards"].map((x) => CardCustomer.fromJson(x))),
     dateCreated: DateTime.parse(json["date_created"]),
     dateLastUpdated: DateTime.parse(json["date_last_updated"]),
+    //dateRegistered: DateTime.parse(json["date_registered"]),
     defaultAddress: json["default_address"],
     defaultCard: json["default_card"],
     email: json["email"],
@@ -262,6 +269,7 @@ class Result {
     id: json["id"],
     identification: Identification.fromJson(json["identification"]),
     lastName: json["last_name"],
+    description: json["description"],
     liveMode: json["live_mode"],
     metadata: Metadata.fromJson(json["metadata"]),
     phone: Phone.fromJson(json["phone"]),
@@ -273,9 +281,11 @@ class Result {
     "cards": List<dynamic>.from(cards!.map((x) => x.toJson())),
     "date_created": dateCreated!.toString(),
     "date_last_updated": dateLastUpdated!.toString(),
+    //"date_registered" : dateRegistered!.toString(),
     "default_address": defaultAddress,
     "default_card": defaultCard,
     "email": email,
+    "description": description,
     "first_name": firstName,
     "id": id,
     "identification": identification!.toJson(),
@@ -291,22 +301,30 @@ class Address {
     this.id,
     this.streetName,
     this.zipCode,
+    this.streetNumber,
+    this.city
   });
 
   String? id;
   String? streetName;
   String? zipCode;
+  int? streetNumber;
+  String? city;
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
     id: json["id"],
     streetName: json["street_name"],
     zipCode: json["zip_code"],
+    streetNumber: json["street_number"],
+    city: json["city"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "street_name": streetName,
     "zip_code": zipCode,
+    "street_number": streetNumber,
+    "city": city,
   };
 }
 

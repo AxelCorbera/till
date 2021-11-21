@@ -19,7 +19,7 @@ import 'package:till/pages/checkout.dart';
 import 'package:till/pages/info_payment.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
 
-import 'Home.dart';
+import 'home.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();

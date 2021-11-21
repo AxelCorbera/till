@@ -12,6 +12,7 @@ import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'dart:developer';
 import 'dart:io';
 
+import '../Home.dart';
 import '../globals.dart';
 
 class Scan_Products extends StatefulWidget {
@@ -32,15 +33,19 @@ class _Scan_ProductsState extends State<Scan_Products> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text('Quieres salir de la tienda?'),
-            content: new Text('Se perderan los productos del carro'),
+          builder: (context) => AlertDialog(
+            title: const Text('Quieres salir de la tienda?'),
+            content: const Text('Se perderan los productos del carro'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   globals.ingreso = false;
-                  Navigator.of(context).pushNamed('/Home');
-                  },
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
                 child: new Text('Salir'),
               ),
               TextButton(
@@ -68,8 +73,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
-      child:
-    Scaffold(
+      child: Scaffold(
         body: Container(
           constraints: const BoxConstraints(
             minHeight: 2000,
@@ -149,10 +153,39 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                     producto = Producto(id: '');
                                   });
                                 },
-                                child: producto.nombre == null
-                                    ? Text('Reintentar')
-                                    : Text('Cambiar'),
-                              )
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6)),
+                                padding: const EdgeInsets.all(0.0),
+                                child: Ink(
+                                  width: 160,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              begin: Alignment.bottomLeft,
+                                              end: Alignment.topRight,
+                                              colors: Colores.combinacion1),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(6)),
+                                        ),
+                                  child: Container(
+                                    constraints: const BoxConstraints(
+                                        minWidth: 88.0, minHeight: 45.0),
+                                    // min sizes for Material buttons
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      producto.nombre == null
+                                          ?'Reintentar':
+                                      'Escanear',
+                                    style: TextStyle(
+                                      color: Colors.white
+                                    ),),
+                                  ),
+                                ),
+                              ),
+                              if (producto.nombre == null)
+                                const SizedBox(
+                                  height: 35,
+                                ),
                             ],
                           ),
                     Container(
@@ -168,11 +201,11 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context)
-                                .pushNamed('/Cart');
-                            //     .then((value) => setState(() {
-                            //           controller!.resumeCamera();
-                            //         }));
-                            // controller!.pauseCamera();
+                                .pushNamed('/Cart')
+                                .then((value) => setState(() {
+                                      controller!.resumeCamera();
+                                    }));
+                            controller!.pauseCamera();
                           },
                           child: Column(
                             children: <Widget>[
@@ -194,11 +227,11 @@ class _Scan_ProductsState extends State<Scan_Products> {
                           onTap: carrito.id.isNotEmpty
                               ? () {
                                   Navigator.of(context)
-                                      .pushNamed('/InfoPayment');
-                                  //     .then((value) => setState(() {
-                                  //           controller!.resumeCamera();
-                                  //         }));
-                                  // controller!.stopCamera();
+                                      .pushNamed('/InfoPayment')
+                                      .then((value) => setState(() {
+                                            controller!.resumeCamera();
+                                          }));
+                                  controller!.stopCamera();
                                 }
                               : () {},
                           child: Column(
@@ -208,12 +241,12 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                 height: 70,
                               ),
                               Text(
-                                'Comprar',
+                                'Finalizar compra',
                                 style: TextStyle(
                                     color: carrito.id.length > 0
                                         ? Theme.of(context).primaryColor
                                         : Colors.grey,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 15),
                               )
                             ],
@@ -237,14 +270,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        child:
-                         scan == true
-                             ?_buildQrView(context):
-                        const Center(
-                          child: CircularProgressIndicator(
-
-                          ),
-                        ), // this is my CameraPreview
+                        child: _buildQrView(context),
                       ),
                     )
                     //     :Center(child: Column(
@@ -272,7 +298,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
     // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
+      onQRViewCreated: scan == true ? _onQRViewCreated : n,
       overlay: QrScannerOverlayShape(
           borderColor: Colores.amarillo,
           borderRadius: 10,
@@ -282,6 +308,8 @@ class _Scan_ProductsState extends State<Scan_Products> {
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
   }
+
+  void n(QRViewController controller) {}
 
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
@@ -397,10 +425,11 @@ class _Scan_ProductsState extends State<Scan_Products> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           FlatButton(
-                            child: Text("Cancelar",
+                            child: Text(
+                              "Cancelar",
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor
-                              ),),
+                                  color: Theme.of(context).primaryColor),
+                            ),
                             onPressed: () {
                               Navigator.pop(context);
                             },
@@ -426,8 +455,8 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                 carrito.nombre.add(producto.nombre.toString());
                                 carrito.cantidad.add(cantidad);
                                 carrito.stock.add('100');
-                                carrito.precio
-                                    .add(double.parse(producto.precio.toString()));
+                                carrito.precio.add(
+                                    double.parse(producto.precio.toString()));
                                 print(carrito.precio[0]);
                                 carrito.imagen.add('');
                                 carrito.descuento!
@@ -448,7 +477,8 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                     begin: Alignment.bottomLeft,
                                     end: Alignment.topRight,
                                     colors: Colores.combinacion1),
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(6)),
                               ),
                               child: Container(
                                 constraints: const BoxConstraints(
@@ -457,7 +487,7 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                 alignment: Alignment.center,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Text(
                                       'Aceptar',
                                       style: TextStyle(
@@ -497,8 +527,6 @@ class _Scan_ProductsState extends State<Scan_Products> {
   // }
 
   void _actualizar() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 }

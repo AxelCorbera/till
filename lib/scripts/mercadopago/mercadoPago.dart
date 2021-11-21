@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:till/globals.dart' as globals;
+import 'package:till/scripts/mercadopago/customerJson.dart';
 import 'package:till/scripts/request.dart' as request;
 import 'package:till/scripts/mercadopago/json/saveCardJson.dart';
-import 'package:till/scripts/mercadopago/json/cardsJson.dart' as cards;
+import 'package:till/scripts/mercadopago/cardsJson.dart';
 import 'package:mercadopago_sdk/mercadopago_sdk.dart';
 import 'package:http/http.dart' as http;
 
@@ -96,7 +98,7 @@ Future<String> GuardarTarjeta(String cardToken) async {
   }
 }
 
-Future<List<cards.Cards>> BuscarTarjetas(String customerId) async {
+Future<List<Cards>> BuscarTarjetas(String customerId) async {
   while (globals.accessToken == "") {
     await request.Claves("MoritasPet");
   }
@@ -111,10 +113,36 @@ Future<List<cards.Cards>> BuscarTarjetas(String customerId) async {
   try {
     print(globals.accessToken);
     print(result);
-    return cards
-        .cardsFromJson(jsonDecode(result["response"]) as Map<String, dynamic>);
+    return cardsFromJson(jsonDecode(result["response"]));
   } catch (Exception) {
     print(Exception);
-    return <cards.Cards>[];
+    return <Cards>[];
   }
 }
+
+Future<FindCustomer> BuscarCustomer(String email) async {
+  while (globals.accessToken == "") {
+    await request.Claves("EMPRESA-BA_S.A");
+  }
+  var mp = MP.fromAccessToken(globals.accessToken);
+
+  Map customer_id = new Map<String, String>();
+  customer_id["email"] = email;
+
+  final result = await mp.get("/v1/customers/search",
+      params: customer_id as Map<String, String>);
+
+  try {
+    print(globals.accessToken);
+    Clipboard.setData(ClipboardData(text: result.toString()));
+    print('buscarcustomer >> ' + result["response"].toString() + '<<');
+    return FindCustomer.fromJson(result["response"]);
+  } catch (Exception) {
+    print(Exception);
+    FindCustomer e = FindCustomer();
+    e.results = [];
+    return e;
+  }
+}
+
+

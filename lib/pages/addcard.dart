@@ -1,11 +1,12 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:till/constants/themes.dart';
+import 'package:till/scripts/mercadopago/customerJson.dart';
 import 'package:till/scripts/mercadopago/json/crearCustomerJson.dart' as c;
 import 'package:till/scripts/mercadopago/cuotasJson.dart';
 import 'package:till/scripts/mercadopago/mercadoPago.dart';
 import 'package:till/scripts/request.dart' as request;
-//import 'package:till/Home.dart' as home;
+//import 'package:till/home.dart' as home;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:till/globals.dart' as globals;
@@ -551,7 +552,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
             ),
             RaisedButton(
               onPressed: () {
-                print('volver');
+                _consultarCustomer();
                 if (globals.usuario!.id_customer_mp != "") {
                   widget.pago ? _pagoTarjeta() : _agregarTarjeta();
                 } else {
@@ -724,6 +725,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
   }
 
   void _crearCustomer() async {
+    print('creando customer');
     if (globals.usuario!.correo == "") {
       print(globals.usuario!.correo! +
           globals.usuario!.nombre! +
@@ -750,6 +752,12 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
     //   String? defaultCard;
 
     request.CrearCustomer(customer);
+  }
+  void _consultarCustomer() async{
+    print('consultando customer...');
+    FindCustomer respuesta = await BuscarCustomer(globals.usuario!.correo.toString());
+      print('hay customer > '+ respuesta.results![0].id.toString());
+      globals.usuario!.id_customer_mp = respuesta.results![0].id.toString();
   }
 
   void _mostrarMensaje(String msg) {
@@ -808,6 +816,8 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
         return;
     }
   }
+
+
 }
 
 class TarjetaPago {
