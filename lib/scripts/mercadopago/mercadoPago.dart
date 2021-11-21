@@ -67,7 +67,7 @@ Future<String> GuardarTarjeta(String cardToken) async {
 
   String accessToken = globals.accessToken;
 
-  String customer_id = globals.usuario!.idcustomer.toString();
+  String customer_id = globals.usuario!.id_customer_mp.toString();
   Map token = new Map<String, String>();
   token["token"] = cardToken;
 

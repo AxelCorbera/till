@@ -552,7 +552,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
             RaisedButton(
               onPressed: () {
                 print('volver');
-                if (globals.usuario!.idcustomer != "") {
+                if (globals.usuario!.id_customer_mp != "") {
                   widget.pago ? _pagoTarjeta() : _agregarTarjeta();
                 } else {
                   _crearCustomer();

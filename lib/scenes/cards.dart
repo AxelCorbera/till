@@ -458,7 +458,7 @@ class _CardsState extends State<Cards> {
                           FlatButton(
                               onPressed: () async {
                                 EliminarTarjeta(
-                                    globals.usuario!.idcustomer.toString(),
+                                    globals.usuario!.id_customer_mp.toString(),
                                     globals.cards[index].id.toString());
                                 await _buscarTarjetas();
                                 Navigator.pop(context);
@@ -487,9 +487,9 @@ class _CardsState extends State<Cards> {
 
   Future _buscarTarjetas() async {
     print("buscando tarjetas..");
-    if (globals.usuario!.idcustomer != "") {
+    if (globals.usuario!.id_customer_mp != "") {
       List<c.Cards> tarjetas = await request.BuscarTarjetas(globals
-          .usuario!.idcustomer
+          .usuario!.id_customer_mp
           .toString()); //globals.usuario!.idcustomer.toString() //819221039-mHUSlOwg4ApZGE
       globals.cards = List.from(tarjetas);
       if (tarjetas.length > 0 && tarjetas[0].error != null) {

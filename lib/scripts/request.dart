@@ -100,18 +100,21 @@ class Usuario {
   String? nombre;
   String? apellido;
   String? correo;
-  String? clave;
-  String? tipo;
-  String? cuil;
-  String? razonsocial;
-  String? compras;
-  String? idcompras;
-  String? idcustomer;
-  String? idtarjetas;
-  String? jsonDatos;
+  String? documento;
+  String? telefono;
   String? token;
-  String? mascotas;
-  String? historial;
+  String? persona;
+  String? cuil;
+  String? razon_social;
+  String? id_customer_mp;
+  String? id_card_mp;
+  String? provincia;
+  String? municipio;
+  String? localidad;
+  String? calle;
+  String? numero;
+  String? piso;
+  String? departamento;
   String? foto;
 
   Usuario(
@@ -119,18 +122,21 @@ class Usuario {
       this.nombre,
       this.apellido,
       this.correo,
-      this.clave,
-      this.tipo,
-      this.cuil,
-      this.razonsocial,
-      this.compras,
-      this.idcompras,
-      this.idcustomer,
-      this.idtarjetas,
-      this.jsonDatos,
+      this.documento,
+      this.telefono,
       this.token,
-      this.mascotas,
-      this.historial,
+      this.persona,
+      this.cuil,
+      this.razon_social,
+      this.id_customer_mp,
+      this.id_card_mp,
+      this.provincia,
+      this.municipio,
+      this.localidad,
+      this.calle,
+      this.numero,
+      this.piso,
+      this.departamento,
       this.foto);
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
@@ -138,38 +144,45 @@ class Usuario {
     var nombreJson = json['nombre'];
     var apellidoJson = json['aprellido'];
     var correoJson = json['correo'];
-    var claveJson = json['clave'];
-    var tipoJson = json['tipo'];
-    var cuilJson = json['cuil'];
-    var razonsocialJson = json['razonsocial'];
-    var comprasJson = json['compras'];
-    var idcomprasJson = json['idcompras'];
-    var idcustomerJson = json['idcustomer'];
-    var idtarjetasJson = json['idtarjetas'];
-    var jsonDatoJson = json['jsonDatos'];
+    var documentoJson = json['documento'];
+    var telefonoJson = json['telefono'];
     var tokenJson = json['token'];
-    var mascotasJson = json['mascotas'];
-    var historialJson = json['historial'];
+    var personaJson = json['persona'];
+    var cuilJson = json['cuil'];
+    var razon_socialJson = json['razon_social'];
+    var customerJson = json['id_customer_mp'];
+    var cardJson = json['id_card_mp'];
+    var provinciaJson = json['provincia'];
+    var municipioJson = json['municipio'];
+    var localidadJson = json['localidad'];
+    var calleJson = json['calle'];
+    var numeroJson = json['numero'];
+    var pisoJson = json['piso'];
+    var departamentoJson = json['departamento'];
     var fotoJson = json['foto'];
+
 
     return new Usuario(
         idJson,
         nombreJson,
         apellidoJson,
         correoJson,
-        claveJson,
-        tipoJson,
-        cuilJson,
-        razonsocialJson,
-        comprasJson,
-        idcomprasJson,
-        idcustomerJson,
-        idtarjetasJson,
-        jsonDatoJson,
+        documentoJson,
+        telefonoJson,
         tokenJson,
-        mascotasJson,
-        historialJson,
-        fotoJson);
+        personaJson,
+        cuilJson,
+        razon_socialJson,
+        customerJson,
+        cardJson,
+        provinciaJson,
+        municipioJson,
+        localidadJson,
+        calleJson,
+        numeroJson,
+    pisoJson,
+    departamentoJson,
+    fotoJson);
   }
 }
 
@@ -658,7 +671,7 @@ Future<CreateCustomer> CrearCustomer(Datos customerDatos) async {
         await _actualizarCustomerDB(c.id.toString(), c.email.toString());
     print("actualizando customer en base de datos: " + resp);
     if (resp == "1") {
-      globals.usuario!.idcustomer = c.id;
+      globals.usuario!.id_customer_mp = c.id;
     }
     return c;
   } else {

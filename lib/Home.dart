@@ -357,7 +357,8 @@ class _HomeState extends State<Home> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('username', '');
     prefs.setString('password', '');
-    globals.usuario = Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+    globals.usuario = Usuario("", "", "", "", "", "", "", "", "", "", "", "", "","","","",
+    "","","","");
 
   }
 
@@ -413,7 +414,7 @@ class _HomeState extends State<Home> {
     carrito = globals.carrito.id.length;
     if (globals.login) {
       //_buscarTarjetas();
-      _buscarCustomer();
+     // _buscarCustomer();
     }
   }
 
@@ -423,9 +424,9 @@ class _HomeState extends State<Home> {
   }
 
   void _buscarTarjetas() async {
-    if (globals.usuario!.idcustomer != "") {
+    if (globals.usuario!.id_customer_mp != "") {
       List<Cards> tarjetas = await request.BuscarTarjetas(globals
-          .usuario!.idcustomer
+          .usuario!.id_customer_mp
           .toString()); //globals.usuario!.idcustomer.toString() //819221039-mHUSlOwg4ApZGE
       globals.cards = List.from(tarjetas);
       if (tarjetas.length > 0 && tarjetas[0].error != null) {
@@ -434,8 +435,8 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void _buscarCustomer() async {
-    FindCustomer customer = await request.BuscarCustomer("test@hotmail.com");
-    print('results: ' + customer.results!.length.toString());
-  }
-}
+//   void _buscarCustomer() async {
+//     FindCustomer customer = await request.BuscarCustomer("test@hotmail.com");
+//     print('results: ' + customer.results!.length.toString());
+//   }
+ }

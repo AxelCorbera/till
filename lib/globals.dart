@@ -9,7 +9,8 @@ Listado listado = Listado();
 bool ingreso = false;
 
 Usuario? usuario =
-    Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+    Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "","","",
+    "","","","");
 
 bool login = false;
 

@@ -271,13 +271,13 @@ class _RegisterState extends State<Register> {
         bool existe = false;
         firestoreInstance.collection("users").get().then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
-            print(result.get('uid') + '<>' + _auth.currentUser!.uid);
+            print(result.get('uid') + '<create>' + _auth.currentUser!.uid);
             if (result.get('uid') == _auth.currentUser!.uid) existe = true;
             print(existe);
           });
           if (existe == false) {
             final addU = AddUser(
-                _auth.currentUser!.uid, name, userName);
+                _auth.currentUser!.uid, name, userName, password);
             addU.addUser();
             print('usuario agregado');
           }

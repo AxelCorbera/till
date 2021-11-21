@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:till/provider/authentication_service.dart';
 import 'package:till/scripts/request.dart' as request;
@@ -262,16 +263,52 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future _loginGoogle() async{
-    final provider = await Provider.of<
+  Future<void> _loginGoogle() async{
+    var provider = await Provider.of<
         GoogleSignInProvider>(context, listen: false);
-    provider.googleLogin()
-        .then((value) => Navigator.of(context).pushNamed('/Home'));
+    provider.googleLogin().then((value) => {
+    loginGoogle2(provider.user)
+    });
+  }
 
-        //Navigator.of(context).pushNamed('/Home');
-        globals.login = true;
-        globals.usuario!.nombre = provider.user.displayName;
+  void loginGoogle2(GoogleSignInAccount user){
+    print('inicio sesion google? id: ' + user.id);
+    if(user.id.isNotEmpty) {
+      firestoreInstance.collection("users").get().then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          print(result.get('uid') + '<google>' + user.id);
+          if (result.get('uid') == user.id) {
+            print('cargar info > ' + result.get('uid'));
+            globals.usuario!.id = result.get('uid');
+            globals.usuario!.correo = result.get('correo');
+            globals.usuario!.nombre = result.get('nombre');
+            globals.usuario!.documento = result.get('documento');
+            globals.usuario!.telefono = result.get('telefono');
+            globals.usuario!.persona = result.get('persona');
+            globals.usuario!.cuil = result.get('cuil');
+            globals.usuario!.razon_social = result.get('razon_social');
+            globals.usuario!.token = result.get('token');
+            globals.usuario!.id_customer_mp = result.get('id_customer_mp');
+            globals.usuario!.id_card_mp = result.get('id_card_mp');
+            globals.usuario!.provincia = result.get('provincia');
+            globals.usuario!.municipio = result.get('municipio');
+            globals.usuario!.localidad = result.get('localidad');
+            globals.usuario!.calle = result.get('calle');
+            globals.usuario!.numero = result.get('numero');
+            globals.usuario!.piso = result.get('piso');
+            globals.usuario!.departamento = result.get('departamento');
+            globals.usuario!.foto = user.photoUrl;
+          }
+        });
+      }).
+      then((value) => Navigator.of(context).pushNamed('/Home'));
 
+      //Navigator.of(context).pushNamed('/Home');
+      globals.login = true;
+    }else{
+      _mostrarMensaje('Error al iniciar sesion');
+      globals.login = true;
+    }
   }
 
   void _login(BuildContext context, bool autolog) async {
@@ -295,11 +332,28 @@ class _LoginState extends State<Login> {
                 globals.login = true;
                 firestoreInstance.collection("users").get().then((querySnapshot) {
                   querySnapshot.docs.forEach((result) {
-                    print(result.get('uid') + '<>' + _auth.currentUser!.uid);
+                    print(result.get('uid') + '<login>' + _auth.currentUser!.uid);
                     if (result.get('uid') == _auth.currentUser!.uid){
+                      print('cargar info > ' + result.get('uid'));
                       globals.usuario!.id = result.get('uid');
                       globals.usuario!.correo = result.get('correo');
                       globals.usuario!.nombre = result.get('nombre');
+                      globals.usuario!.documento = result.get('documento');
+                      globals.usuario!.telefono = result.get('telefono');
+                      globals.usuario!.persona = result.get('persona');
+                      globals.usuario!.cuil = result.get('cuit/cuil');
+                      globals.usuario!.razon_social = result.get('razon_social');
+                      globals.usuario!.token = result.get('token');
+                      globals.usuario!.id_customer_mp = result.get('id_customer_mp');
+                      globals.usuario!.id_card_mp = result.get('id_card_mp');
+                      globals.usuario!.provincia = result.get('provincia');
+                      globals.usuario!.municipio = result.get('municipio');
+                      globals.usuario!.localidad = result.get('localidad');
+                      globals.usuario!.calle = result.get('calle');
+                      globals.usuario!.numero = result.get('numero');
+                      globals.usuario!.piso = result.get('piso');
+                      globals.usuario!.departamento = result.get('departamento');
+                      globals.usuario!.foto = result.get('foto');
                     }
                     });
                   }).
@@ -340,6 +394,28 @@ class _LoginState extends State<Login> {
           });
 
     }
+  }
+
+  void _cargarInformacion(QuerySnapshot result, int i){
+    globals.usuario!.id = result.docs[i].get('uid');
+    globals.usuario!.correo = result.docs[i].get('correo');
+    globals.usuario!.nombre = result.docs[i].get('nombre');
+    globals.usuario!.documento = result.docs[i].get('documento');
+    globals.usuario!.telefono = result.docs[i].get('telefono');
+    globals.usuario!.persona = result.docs[i].get('persona');
+    globals.usuario!.cuil = result.docs[i].get('cuit/cuil');
+    globals.usuario!.razon_social = result.docs[i].get('razon_social');
+    globals.usuario!.token = result.docs[i].get('token');
+    globals.usuario!.id_customer_mp = result.docs[i].get('id_customer_mp');
+    globals.usuario!.id_card_mp = result.docs[i].get('id_card_mp');
+    globals.usuario!.provincia = result.docs[i].get('provincia');
+    globals.usuario!.municipio = result.docs[i].get('municipio');
+    globals.usuario!.localidad = result.docs[i].get('localidad');
+    globals.usuario!.calle = result.docs[i].get('calle');
+    globals.usuario!.numero = result.docs[i].get('numero');
+    globals.usuario!.piso = result.docs[i].get('piso');
+    globals.usuario!.departamento = result.docs[i].get('departamento');
+    globals.usuario!.foto = result.docs[i].get('foto');
   }
 
   void _mostrarMensaje(String msg) {

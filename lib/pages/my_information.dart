@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:till/constants/themes.dart';
 import 'package:till/scenes/components/direccion.dart';
 import 'package:till/globals.dart' as globals;
+import 'package:till/scripts/cloud_firestore.dart';
 import 'info_payment.dart';
 
 class My_Information extends StatefulWidget {
@@ -12,10 +13,18 @@ class _my_InformationState extends State<My_Information> {
   Domicilio domicilio = new Domicilio('', '', '', '', 0, '', '');
   Direcciones dir = new Direcciones();
   GlobalKey<FormState> _keyForm = GlobalKey();
-  String prov = '', muni = '', loc = '', dire = '';
+  String nombre = globals.usuario!.nombre.toString(),
+      correo = globals.usuario!.correo.toString(),
+      documento = globals.usuario!.documento.toString(),
+      telefono = globals.usuario!.telefono.toString();
 
   @override
   Widget build(BuildContext context) {
+    nombre = globals.usuario!.nombre.toString();
+    correo = globals.usuario!.correo.toString();
+    documento = globals.usuario!.documento.toString();
+    telefono = globals.usuario!.telefono.toString();
+    print(globals.usuario!.documento.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -41,9 +50,12 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value){
+                      nombre = value;
+                    },
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.grey[700],
                     ),
                     decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
@@ -69,9 +81,12 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value){
+                      correo = value;
+                    },
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.grey[700],
                     ),
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
@@ -97,9 +112,12 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value){
+                      documento = value;
+                    },
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.grey[700],
                     ),
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
@@ -112,7 +130,7 @@ class _my_InformationState extends State<My_Information> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
-                    initialValue: '',
+                    initialValue: globals.usuario!.documento.toString(),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
@@ -125,9 +143,12 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value){
+                      telefono = value;
+                    },
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.grey[700],
                     ),
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
@@ -140,35 +161,7 @@ class _my_InformationState extends State<My_Information> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
-                    initialValue: '',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Telefono alternativo',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),),
-                    ),
-                  ),
-                  TextFormField(
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    initialValue: '',
+                    initialValue: globals.usuario!.telefono.toString(),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
@@ -181,9 +174,10 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   TextFormField(
+                    readOnly: true,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: Colors.grey[700],
                     ),
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
@@ -196,7 +190,10 @@ class _my_InformationState extends State<My_Information> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
-                    initialValue: domicilio.calle + ' ' + domicilio.numero.toString(),
+                    initialValue: globals.usuario!.calle!=''?
+                    globals.usuario!.calle.toString() +
+                        ' ' + globals.usuario!.numero.toString():
+                    '',
                   ),
                   SizedBox(height: 30,),
                   Padding(
@@ -222,10 +219,22 @@ class _my_InformationState extends State<My_Information> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0),
                     child: RaisedButton(
                       onPressed: () {
-
+                        Map<String,String> map =
+                        {
+                          'nombre':nombre,
+                          'correo':correo,
+                          'documento':documento,
+                          'telefono':telefono,
+                        };
+                        globals.usuario!.nombre = nombre;
+                        globals.usuario!.correo = correo;
+                        globals.usuario!.documento = documento;
+                        globals.usuario!.telefono = telefono;
+                        UpdateUser(globals.usuario!.id.toString()
+                        ).updateUser(map);
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
