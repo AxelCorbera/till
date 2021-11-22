@@ -434,11 +434,8 @@ Future<String> BorrarFoto(
 Future<List<Cards>> BuscarTarjetas(String idCustomer) async {
   //    SI NO HAY TARJETAS, TIRA ERROR !
 
-  // Map map = new Map<String, dynamic>();
-  // map['customer'] = idCustomer;
-  // map['comercio'] = 'MoritasPet';
   while (globals.accessToken == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   String accessToken = globals.accessToken;
 
@@ -449,7 +446,7 @@ Future<List<Cards>> BuscarTarjetas(String idCustomer) async {
       'Authorization': 'Bearer $accessToken'
     },
   );
-  print("? "+response.body.toString() +" "+ response.statusCode.toString());
+  print("buscarTarjetas? "+response.body.toString() +" "+ response.statusCode.toString());
   if (response.statusCode == 200 || response.statusCode == 201) {
     // If the server did return a 200 CREATED response,
     // then parse the JSON.
@@ -511,9 +508,9 @@ Future<Cards> EliminarTarjeta(String idCustomer, String idTarjeta) async {
   }
 }
 
-Future<CreateCustomer> CrearCustomer(Datos customerDatos) async {
+Future<CreateCustomer> crearCustomer(Datos customerDatos) async {
   while (globals.accessToken == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   String accessToken = globals.accessToken;
 
@@ -525,6 +522,7 @@ Future<CreateCustomer> CrearCustomer(Datos customerDatos) async {
     },
     body: jsonEncode(customerDatos),
   );
+  print(jsonEncode(customerDatos));
   print(">> " + response.body.toString());
   print(response.statusCode);
   if (response.statusCode == 200 || response.statusCode == 201) {
@@ -532,12 +530,6 @@ Future<CreateCustomer> CrearCustomer(Datos customerDatos) async {
     // then parse the JSON.
     print('respuesta ' + jsonDecode(response.body).toString());
     CreateCustomer c = CreateCustomer.fromJson(jsonDecode(response.body));
-    String resp =
-        await _actualizarCustomerDB(c.id.toString(), c.email.toString());
-    print("actualizando customer en base de datos: " + resp);
-    if (resp == "1") {
-      globals.usuario!.id_customer_mp = c.id;
-    }
     return c;
   } else {
     // If the server did not return a 201 CREATED response,
@@ -624,7 +616,7 @@ Future<Credenciales> Claves(String usuario) async { ///// TILL
   map['usuario'] = usuario;
 
   final response = await http.post(
-    Uri.parse('http://wh534614.ispot.cc/credenciales.php?'),
+    Uri.parse('http://wh534614.ispot.cc/credenciales.php'),
     headers: <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     },

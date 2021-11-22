@@ -250,6 +250,22 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          FlatButton(
+                            textColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/Home')
+                                  .then((context) => (){setState(() {
+                              });});
+                            },
+                            child: Text("Ingresar sin cuenta",
+                              style: TextStyle(
+                                  color: Colores.rojo
+                              ),),
+                          ),
                         ],
                       ),
                     ),

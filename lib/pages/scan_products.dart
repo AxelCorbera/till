@@ -12,7 +12,7 @@ import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'dart:developer';
 import 'dart:io';
 
-import '../Home.dart';
+import '../home.dart';
 import '../globals.dart';
 
 class Scan_Products extends StatefulWidget {

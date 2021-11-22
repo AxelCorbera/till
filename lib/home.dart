@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:till/globals.dart' as globals;
 import 'package:till/provider/google_sing_in.dart';
 import 'package:till/pages/login.dart';
+import 'package:till/scripts/cloud_firestore.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
+import 'package:till/scripts/mercadopago/mercadoPago.dart';
 import 'package:till/scripts/request.dart' as request;
 import 'package:till/scripts/mercadopago/mercadoPago.dart' as mp;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,9 +54,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    if (globals.login) {
-      _buscarTarjetas();
-    }
     this.carrito = globals.carrito.id.length;
     return Scaffold(
       appBar: AppBar(
@@ -143,7 +142,7 @@ class _HomeState extends State<Home> {
                   color: Theme.of(context).primaryColor,
                 )),
             GestureDetector(
-                onTap: () => Navigator.of(context).pushNamed('/My_Account'),
+              onTap: () => Navigator.of(context).pushNamed('/My_Account'),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 0),
                 height: 100,
@@ -175,15 +174,15 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Theme.of(context).primaryColor,
-                          image: globals.usuario!.foto!=''?
-                          DecorationImage(
-                              image:
-                              NetworkImage(globals.usuario!.foto.toString()),
-                              fit: BoxFit.contain):
-                          DecorationImage(
-                              image:
-                                  AssetImage('lib/assets/images/fondoClaro.jpg'),
-                              fit: BoxFit.cover),
+                          image: globals.usuario!.foto != ''
+                              ? DecorationImage(
+                                  image: NetworkImage(
+                                      globals.usuario!.foto.toString()),
+                                  fit: BoxFit.contain)
+                              : DecorationImage(
+                                  image: AssetImage(
+                                      'lib/assets/images/fondoClaro.jpg'),
+                                  fit: BoxFit.cover),
                         ),
                       ),
                     ]),
@@ -195,18 +194,18 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              globals.usuario!.nombre.toString()==""?
-                              'Invitado':
-                              globals.usuario!.nombre.toString(),
+                              globals.usuario!.nombre.toString() == ""
+                                  ? 'Invitado'
+                                  : globals.usuario!.nombre.toString(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              globals.usuario!.nombre.toString()==""?
-                              '':
-                              'Mi cuenta',
+                              globals.usuario!.nombre.toString() == ""
+                                  ? ''
+                                  : 'Mi cuenta',
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
@@ -234,9 +233,7 @@ class _HomeState extends State<Home> {
                       color: Theme.of(context).primaryColor,
                     ),
                     onTap: () {
-                      globals.login
-                          ? Navigator.pushNamed(context, '/Purchases')
-                          : _unlogin(context);
+                      Navigator.pushNamed(context, '/Home');
                     },
                   ),
                   ListTile(
@@ -245,21 +242,15 @@ class _HomeState extends State<Home> {
                       Icons.campaign,
                       color: Theme.of(context).primaryColor,
                     ),
-                    trailing:
-                    Container(
+                    trailing: Container(
                       width: 20,
                       decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle
-                      ),
+                          color: Colors.red, shape: BoxShape.circle),
                       child: Center(
                         child: Text(
                           '1',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                          ),
-
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -357,9 +348,8 @@ class _HomeState extends State<Home> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('username', '');
     prefs.setString('password', '');
-    globals.usuario = Usuario("", "", "", "", "", "", "", "", "", "", "", "", "","","","",
-    "","","","");
-
+    globals.usuario = Usuario("", "", "", "", "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "");
   }
 
   void _unlogin(BuildContext context) {
@@ -387,7 +377,7 @@ class _HomeState extends State<Home> {
                     RaisedButton(
                         child: Text("Iniciar sesion"),
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/');
+                          Navigator.of(context).pushNamed('/Login');
                         }),
                   ],
                 ),
@@ -413,8 +403,7 @@ class _HomeState extends State<Home> {
     super.initState();
     carrito = globals.carrito.id.length;
     if (globals.login) {
-      //_buscarTarjetas();
-     // _buscarCustomer();
+      _info();
     }
   }
 
@@ -424,13 +413,41 @@ class _HomeState extends State<Home> {
   }
 
   void _buscarTarjetas() async {
-    if (globals.usuario!.id_customer_mp != "") {
-      List<Cards> tarjetas = await request.BuscarTarjetas(globals
-          .usuario!.id_customer_mp
-          .toString()); //globals.usuario!.idcustomer.toString() //819221039-mHUSlOwg4ApZGE
-      globals.cards = List.from(tarjetas);
-      if (tarjetas.length > 0 && tarjetas[0].error != null) {
-        print('error: ' + tarjetas[0].error.toString());
+    List<Cards> tarjetas = await request.BuscarTarjetas(globals
+        .usuario!.id_customer_mp
+        .toString());
+    if(tarjetas.length > 0) {
+      globals.cards.clear();
+      globals.cards = tarjetas;
+    }
+    if (tarjetas.length > 0 && tarjetas[0].error != null) {
+      print('error: ' + tarjetas[0].error.toString());
+    }
+  }
+
+  void _info() async {
+    if (globals.usuario!.id_customer_mp == '') {
+      print('consultando customer...');
+      String respuesta =
+          await BuscarCustomer(globals.usuario!.correo.toString());
+      try {
+        if (respuesta == '0') {
+          print('No hay customer');
+          return;
+        }
+        print('hay customer > ' + respuesta);
+        if (globals.usuario!.id_customer_mp !=
+            respuesta) {
+          globals.usuario!.id_customer_mp = respuesta;
+          Map<String, String> datos = {
+            "id_customer_mp": respuesta
+          };
+          UpdateUser(globals.usuario!.id.toString()).updateUser(datos);
+        }
+
+        _buscarTarjetas();
+      } catch (Exception) {
+        print('Ocurrio un error consultando customer');
       }
     }
   }
@@ -439,4 +456,4 @@ class _HomeState extends State<Home> {
 //     FindCustomer customer = await request.BuscarCustomer("test@hotmail.com");
 //     print('results: ' + customer.results!.length.toString());
 //   }
- }
+}

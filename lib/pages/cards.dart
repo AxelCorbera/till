@@ -41,7 +41,7 @@ class _CardsState extends State<Cards> {
               },
               icon: Icon(
                 Icons.add_circle_outline,
-                color: Theme.of(context).secondaryHeaderColor,
+                color: Colors.white,
               ),
               label: Text(""),
             )

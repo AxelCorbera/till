@@ -30,7 +30,7 @@ class DatosTarjeta {
 
 Future<String> CardToken(DatosTarjeta datos) async {
   while (globals.publicKey == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   String publicKey = globals.publicKey;
   var mp = MP.fromAccessToken(globals.accessToken);
@@ -63,7 +63,7 @@ Future<String> CardToken(DatosTarjeta datos) async {
 
 Future<String> GuardarTarjeta(String cardToken) async {
   while (globals.accessToken == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   var mp = MP.fromAccessToken(globals.accessToken);
 
@@ -100,7 +100,7 @@ Future<String> GuardarTarjeta(String cardToken) async {
 
 Future<List<Cards>> BuscarTarjetas(String customerId) async {
   while (globals.accessToken == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   var mp = MP.fromAccessToken(globals.accessToken);
 
@@ -120,9 +120,9 @@ Future<List<Cards>> BuscarTarjetas(String customerId) async {
   }
 }
 
-Future<FindCustomer> BuscarCustomer(String email) async {
+Future<String> BuscarCustomer(String email) async {
   while (globals.accessToken == "") {
-    await request.Claves("EMPRESA-BA_S.A");
+    await request.Claves("Till");
   }
   var mp = MP.fromAccessToken(globals.accessToken);
 
@@ -136,12 +136,13 @@ Future<FindCustomer> BuscarCustomer(String email) async {
     print(globals.accessToken);
     Clipboard.setData(ClipboardData(text: result.toString()));
     print('buscarcustomer >> ' + result["response"].toString() + '<<');
-    return FindCustomer.fromJson(result["response"]);
+    FindCustomer f = FindCustomer.fromJson(result["response"]);
+    return f.results![0].id.toString();
   } catch (Exception) {
     print(Exception);
     FindCustomer e = FindCustomer();
     e.results = [];
-    return e;
+    return "0";
   }
 }
 

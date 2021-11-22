@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:till/constants/themes.dart';
+import 'package:till/scripts/cloud_firestore.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
 import 'package:till/scripts/mercadopago/json/crearCustomerJson.dart' as c;
 import 'package:till/scripts/mercadopago/cuotasJson.dart';
@@ -552,13 +553,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
             ),
             RaisedButton(
               onPressed: () {
-                _consultarCustomer();
-                if (globals.usuario!.id_customer_mp != "") {
-                  widget.pago ? _pagoTarjeta() : _agregarTarjeta();
-                } else {
-                  _crearCustomer();
-                  widget.pago ? _pagoTarjeta() : _agregarTarjeta();
-                }
+                _nuevaTarjeta();
               },
               color: Theme.of(context).primaryColor,
               child: widget.pago
@@ -732,32 +727,43 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
           globals.usuario!.apellido!);
       return;
     }
-    c.Datos customer = new c.Datos();
+    c.Datos customer = c.Datos();
     customer.email = globals.usuario!.correo;
     customer.firstName = globals.usuario!.nombre;
-    customer.lastName = globals.usuario!.apellido;
-    customer.phone = new c.Phone();
-    customer.identification = new c.Identification();
-    customer.address = new c.Address();
+    customer.lastName = "Corbera";
+    c.Phone phone = c.Phone();
+    phone.areaCode = "011";
+    phone.areaCode = "11111111";
+    customer.phone = phone;
+    c.Identification ident = c.Identification();
+    ident.type = "DNI";
+    ident.number = "12345678";
+    customer.identification = ident;
+    c.Address dire = c.Address();
+    dire.streetName = "calle falsa";
+    dire.streetNumber = 132;
+    customer.address = dire;
 
-    //String? email;
-    //   String? firstName;
-    //   String? lastName;
-    //   Phone? phone;
-    //   Identification? identification;
-    //   String? defaultAddress;
-    //   Address? address;
-    //   String? dateRegistered;
-    //   String? description;
-    //   String? defaultCard;
+    CreateCustomer resp = await request.crearCustomer(customer);
 
-    request.CrearCustomer(customer);
+    if (resp.id!='') {
+      globals.usuario!.id_customer_mp = resp.id;
+      Map<String, String> datos = {
+        "id_customer_mp": resp.id.toString()
+      };
+      UpdateUser(globals.usuario!.id.toString()).updateUser(datos);
+    }
   }
   void _consultarCustomer() async{
     print('consultando customer...');
-    FindCustomer respuesta = await BuscarCustomer(globals.usuario!.correo.toString());
-      print('hay customer > '+ respuesta.results![0].id.toString());
-      globals.usuario!.id_customer_mp = respuesta.results![0].id.toString();
+    String respuesta = await BuscarCustomer(globals.usuario!.correo.toString());
+    if(respuesta != "0") {
+      print('hay customer > ' + respuesta);
+      globals.usuario!.id_customer_mp = respuesta;
+    }else{
+      print('no hay customer');
+    }
+
   }
 
   void _mostrarMensaje(String msg) {
@@ -814,6 +820,16 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
       case "cmr":
         metodoPago = 'lib/assets/icons/logosMetodoPago/cmr.jpg';
         return;
+    }
+  }
+
+  void _nuevaTarjeta() {
+     _consultarCustomer();
+    if (globals.usuario!.id_customer_mp != "") {
+      widget.pago ? _pagoTarjeta() : _agregarTarjeta();
+    } else {
+      _crearCustomer();
+      widget.pago ? _pagoTarjeta() : _agregarTarjeta();
     }
   }
 

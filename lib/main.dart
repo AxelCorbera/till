@@ -14,7 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:till/pages/register.dart';
 import 'package:till/pages/scan_qr.dart';
 import 'package:till/pages/cart.dart';
-import 'package:till/scenes/cards.dart';
+import 'package:till/pages/cards.dart';
 import 'package:till/pages/checkout.dart';
 import 'package:till/pages/info_payment.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
@@ -62,6 +62,8 @@ class MyApp extends StatelessWidget {
               return Info_Payment();
             case '/Address':
               return addAddress();
+            case '/Cards':
+              return Cards();
             case '/AddCard':
               final arg = settings.arguments as ArgumentsAddaCard;
               return AddCard(pago: arg.pago, total: arg.total);
