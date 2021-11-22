@@ -265,7 +265,7 @@ class _InfoPaymentState extends State<Info_Payment> {
                                           fontSize: 13),
                                     )
                                   : Text(
-                                      'Seleccionar forma de pago',
+                                      '',
                                       style: TextStyle(
                                           color: Colors.grey,
                                           fontWeight: FontWeight.bold,
@@ -277,10 +277,9 @@ class _InfoPaymentState extends State<Info_Payment> {
                 Center(
                   child: RaisedButton(
                       color: Theme.of(context).primaryColor,
-                      onPressed: domicilio != '' && efectivo == true ||
-                              domicilio != '' &&
-                                  tarjeta == true &&
-                                  cuotas == true
+                      onPressed:
+                              globals.usuario!.calle != '' &&
+                                  tarjetaSeleccionada.idTarjeta!=''
                           ? () {
                               String number = total.toStringAsFixed(2);
                               total = double.parse(number);
