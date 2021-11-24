@@ -743,6 +743,12 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
     dire.streetName = "calle falsa";
     dire.streetNumber = 132;
     customer.address = dire;
+    customer.description = 'Cliente de till';
+    DateTime now = DateTime.now();
+    String isoDate = now.toIso8601String();
+    customer.dateRegistered =  isoDate;
+    customer.defaultCard = '';
+    customer.defaultAddress = '';
 
     CreateCustomer resp = await request.crearCustomer(customer);
 
