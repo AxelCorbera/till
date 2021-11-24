@@ -18,7 +18,11 @@ List<Cards> cards = <Cards>[];
 
 String accessToken = "";
 
+String accessTokenComercio = "";
+
 String publicKey = "";
+
+String publicKeyComercio = "";
 
 class Carrito {
   final List<String> id;

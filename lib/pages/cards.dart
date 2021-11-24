@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart' as c;
 import 'package:till/globals.dart' as globals;
 import 'package:till/pages/addcard.dart' as addcard;
+import 'package:till/scripts/mercadopago/method_payment_id.dart';
 import 'package:till/scripts/request.dart';
 import 'package:till/scripts/request.dart' as request;
 
@@ -27,25 +28,16 @@ class _CardsState extends State<Cards> {
 
   @override
   Widget build(BuildContext context) {
+    List<c.Cards> lista = [];
+    lista.add(c.Cards());
+    globals.cards.forEach((element) {
+      lista.add(element as c.Cards);
+    });
     if (busqueda) _buscarTarjetas();
     return Scaffold(
         key: _keyScaf,
         appBar: AppBar(
           title: Text('Mis tarjetas'),
-          actions: <Widget>[
-            FlatButton.icon(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed('/AddCard')
-                    .then((value) => setState(() {busqueda=true;}));
-              },
-              icon: Icon(
-                Icons.add_circle_outline,
-                color: Colors.white,
-              ),
-              label: Text(""),
-            )
-          ],
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: busqueda
@@ -56,8 +48,41 @@ class _CardsState extends State<Cards> {
               )
             : globals.cards.length > 0
                 ? ListView.builder(
-                    itemCount: globals.cards.length,
+                    itemCount: lista.length,
                     itemBuilder: (context, index) {
+                      print(lista[index].id);
+                      if (index == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed('/AddCard',
+                                      arguments: ArgumentsAddaCard(false, 1000))
+                                  .then((value) => setState(() {
+                                        busqueda = true;
+                                      }));
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Agregar una nueva tarjeta',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
                       return InkWell(
                           onTap: () {
                             _showDialog(context, index);
@@ -65,44 +90,36 @@ class _CardsState extends State<Cards> {
                           child: Hero(
                               tag: '',
                               child: Padding(
-                                padding: const EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(20),
                                 child: SizedBox(
-                                  height: 230,
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    elevation: 5,
-                                    //color: Colors.grey[300],
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              colors: [
-                                                Colors.black,
-                                                Colors.black54
-                                              ])),
-                                      child: Column(
+                                  height: 100,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.grey[300],
+                                    ),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: <Widget>[
-                                          Row(children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.all(25),
-                                              alignment: Alignment.centerLeft,
-                                              width: 90,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                  image: globals
-                                                              .cards[index]
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 70,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: lista[index]
                                                               .paymentMethod!
                                                               .id !=
                                                           ""
                                                       ? DecorationImage(
                                                           image: new AssetImage(
-                                                              _MetodoPago(globals
-                                                                  .cards[index]
+                                                              MetodoPago(lista[
+                                                                      index]
                                                                   .paymentMethod!
                                                                   .id
                                                                   .toString())),
@@ -111,127 +128,111 @@ class _CardsState extends State<Cards> {
                                                       : null,
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  gradient: LinearGradient(
-                                                      begin:
-                                                          Alignment.bottomLeft,
-                                                      end: Alignment.topRight,
-                                                      colors: [
-                                                        Colors.white70,
-                                                        Colors.white70
-                                                      ])),
-                                            ),
-                                          ]),
-                                          SizedBox(
-                                            height: 10,
+                                                ),
+                                              ),
+                                              Text(
+                                                lista[index]
+                                                    .cardholder!
+                                                    .name
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ),
+                                            ],
                                           ),
-                                          Row(children: <Widget>[
-                                            SizedBox(
-                                              width: 23,
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: 70,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: lista[index]
+                                                              .paymentMethod!
+                                                              .id !=
+                                                          ""
+                                                      ? DecorationImage(
+                                                          image: new AssetImage(
+                                                              MetodoPago(lista[
+                                                                      index]
+                                                                  .paymentMethod!
+                                                                  .id
+                                                                  .toString())),
+                                                          fit: BoxFit.contain,
+                                                        )
+                                                      : null,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              Text(
+                                                '**** **** **** ' +
+                                                    lista[index]
+                                                        .lastFourDigits
+                                                        .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              )
+                                            ],
+                                          ),
+                                          Container(
+                                            width: 10,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.navigate_next,
+                                                  size: 30,
+                                                ),
+                                              ],
                                             ),
-                                            Padding(
-                                                padding: EdgeInsets.all(0),
-                                                child: Text(
-                                                  '**** **** **** ' +
-                                                      globals.cards[index]
-                                                          .lastFourDigits
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      fontSize: 40,
-                                                      color: Colors.white),
-                                                ))
-                                          ]),
-                                          Row(children: <Widget>[
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.all(0),
-                                                child: Text(
-                                                  globals.cards[index]
-                                                      .cardholder!.name
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.white),
-                                                )),
-                                            SizedBox(
-                                              width: 20,
-                                            ),
-                                            Text(
-                                              globals.cards[index]
-                                                      .expirationMonth
-                                                      .toString() +
-                                                  '/' +
-                                                  globals.cards[index]
-                                                      .expirationYear
-                                                      .toString()
-                                                      .substring(2, 4),
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white),
-                                            )
-                                          ]),
-                                        ],
-                                      ),
-                                    ),
+                                          )
+                                        ]),
                                   ),
                                 ),
                               )));
                     })
-                : ListView.builder(
-                    itemCount: 1,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/AddCard', arguments: ArgumentsAddaCard(false,1000));
-                          },
-                          child: Hero(
-                              tag: '',
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: SizedBox(
-                                  height: 230,
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    elevation: 5,
-                                    //color: Colors.grey[300],
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              colors: [
-                                                Colors.grey,
-                                                Colors.black54
-                                              ])),
-                                      child: Center(
-                                        child: Column(children: <Widget>[
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            "Añadir nueva tarjeta",
-                                            style: TextStyle(
-                                                fontSize: 30,
-                                                color: Colors.white),
-                                          ),
-                                          Text(
-                                            "+",
-                                            style: TextStyle(
-                                                fontSize: 100,
-                                                color: Colors.white38),
-                                          )
-                                        ]),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )));
-                    }));
+                : Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed('/AddCard',
+                                arguments: ArgumentsAddaCard(false, 1000))
+                            .then((value) => setState(() {
+                                  busqueda = true;
+                                }));
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Agregar una nueva tarjeta',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ));
   }
 
   Widget hayTarjeta() {
@@ -243,7 +244,8 @@ class _CardsState extends State<Cards> {
           FlatButton.icon(
             onPressed: () {
               Navigator.of(context)
-                  .pushNamed('/AddCard', arguments: ArgumentsAddaCard(false,1000))
+                  .pushNamed('/AddCard',
+                      arguments: ArgumentsAddaCard(false, 1000))
                   .then((value) => setState(() {}));
             },
             icon: Icon(
@@ -294,7 +296,7 @@ class _CardsState extends State<Cards> {
                                                 ""
                                             ? DecorationImage(
                                                 image: new AssetImage(
-                                                    _MetodoPago(globals
+                                                    MetodoPago(globals
                                                         .cards[index]
                                                         .paymentMethod!
                                                         .id
@@ -377,8 +379,12 @@ class _CardsState extends State<Cards> {
           itemBuilder: (context, index) {
             return InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/AddCard', arguments: ArgumentsAddaCard(false,1000))
-                      .then((value) => setState(() {busqueda=true;}));
+                  Navigator.of(context)
+                      .pushNamed('/AddCard',
+                          arguments: ArgumentsAddaCard(false, 1000))
+                      .then((value) => setState(() {
+                            busqueda = true;
+                          }));
                 },
                 child: Hero(
                     tag: '',
@@ -519,45 +525,10 @@ class _CardsState extends State<Cards> {
     );
     _keyScaf.currentState!.showSnackBar(snackBar);
   }
-
-  String _MetodoPago(String id) {
-    switch (id) {
-      case "diners":
-        return 'lib/assets/icons/logosMetodoPago/diners.png';
-      case "argencard":
-        return 'lib/assets/icons/logosMetodoPago/argencard.jpg';
-      case "maestro":
-        return 'lib/assets/icons/logosMetodoPago/maestro.png';
-      case "debvisa":
-        return 'lib/assets/icons/logosMetodoPago/visadebito.jpg';
-      case "cencosud":
-        return 'lib/assets/icons/logosMetodoPago/cencosud.jpg';
-      case "debcabal":
-        return 'lib/assets/icons/logosMetodoPago/cabalDebito.jpg';
-      case "visa":
-        return 'lib/assets/icons/logosMetodoPago/visa.png';
-      case "master":
-        return 'lib/assets/icons/logosMetodoPago/master.png';
-      case "amex":
-        return 'lib/assets/icons/logosMetodoPago/amex.png';
-      case "naranja":
-        return 'lib/assets/icons/logosMetodoPago/naranja.png';
-      case "tarshop":
-        return 'lib/assets/icons/logosMetodoPago/shopping.png';
-      case "cabal":
-        return 'lib/assets/icons/logosMetodoPago/cabal.png';
-      case "debmaster":
-        return 'lib/assets/icons/logosMetodoPago/master.png';
-      case "cordobesa":
-        return 'lib/assets/icons/logosMetodoPago/cordobesa.jpg';
-      case "cmr":
-        return 'lib/assets/icons/logosMetodoPago/cmr.jpg';
-    }
-    return "";
-  }
 }
- class ArgumentsAddaCard{
+
+class ArgumentsAddaCard {
   final bool pago;
   final double total;
   ArgumentsAddaCard(this.pago, this.total);
- }
+}

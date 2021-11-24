@@ -483,7 +483,7 @@ Future<List<Cards>> BuscarTarjetas(String idCustomer) async {
 
 Future<Cards> EliminarTarjeta(String idCustomer, String idTarjeta) async {
   while (globals.accessToken == "") {
-    await request.Claves("MoritasPet");
+    await request.Claves("Till");
   }
   String accessToken = globals.accessToken;
 
