@@ -35,9 +35,12 @@ class GoogleSignInProvider extends ChangeNotifier {
       globals.usuario!.id = _user!.id;
       globals.usuario!.nombre = _user!.displayName.toString();
       globals.usuario!.correo = _user!.email;
-      print(_user!.photoUrl);
       globals.usuario!.foto = _user!.photoUrl;
-
+      print('foto ' + _user!.photoUrl.toString());
+      if(_user!.photoUrl == null) {
+        print('foto ' + _user!.photoUrl.toString());
+        globals.usuario!.foto = '';
+      }
       bool existe = false;
 
       firestoreInstance.collection("users").get().then((querySnapshot) {

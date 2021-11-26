@@ -82,6 +82,8 @@ flutter:
   - lib/assets/images/nenita_qr2.png
   - lib/assets/images/fondoClaro.jpg
   - lib/assets/images/fondoOscuro.jpg
+  - lib/assets/images/fondoAprobado.png
+  - lib/assets/images/fondoRechazado.png
   - lib/assets/icons/avatarDocumento.png
   - lib/assets/icons/logosMetodoPago/amex.png
   - lib/assets/icons/logosMetodoPago/argencard.jpg

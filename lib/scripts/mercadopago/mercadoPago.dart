@@ -28,12 +28,22 @@ class DatosTarjeta {
   String? cvv;
 }
 
-Future<String> CardToken(DatosTarjeta datos) async {
-  while (globals.publicKey == "") {
-    await request.Claves("Till");
+Future<String> CardToken(DatosTarjeta datos, String clave) async {
+  if (globals.publicKey == "") {
+    await request.Claves(clave);
   }
-  String publicKey = globals.publicKey;
+
+  if (globals.publicKeyComercio == "") {
+    await request.Claves(clave);
+  }
+
   var mp = MP.fromAccessToken(globals.accessToken);
+
+  if(clave=="Till") {
+    mp = MP.fromAccessToken(globals.accessToken);
+  }else{
+    mp = MP.fromAccessToken(globals.accessTokenComercio);
+  }
 
   Map identification = new Map<String, dynamic>();
   identification["type"] = datos.docTipo;
@@ -45,14 +55,23 @@ Future<String> CardToken(DatosTarjeta datos) async {
   jsonData["card_number"] = datos.numeros;
   jsonData["security_code"] = datos.cvv;
   jsonData["expiration_month"] = datos.mes;
-  jsonData["expiration_year"] = "20" + datos.ano.toString();
+  if(datos.ano!.length==2){
+    jsonData["expiration_year"] = "20"+datos.ano.toString();
+  }else {
+    jsonData["expiration_year"] = datos.ano.toString();
+  }
   jsonData["cardholder"] = cardholder;
   Map key = new Map<String, String>();
-  key["public_key"] = publicKey;
+  if(clave=="Till") {
+    key["public_key"] = globals.publicKey;
+  }else{
+    key["public_key"] = globals.publicKeyComercio;
+  }
 
   final result = await mp.post("/v1/card_tokens/",
       data: jsonData as Map<String, dynamic>,
       params: key as Map<String, String>);
+  print(result);
   try {
     return result["response"]["id"];
   } catch (Exception) {
@@ -87,11 +106,11 @@ Future<String> GuardarTarjeta(String cardToken) async {
     body: json.encode({"token": "$cardToken"}),
   );
 
-  print(url);
+  SaveCard resp = SaveCard();
   try {
     print(globals.accessToken);
-    print(result);
-    return result.body;
+    resp = saveCardFromJson(result.body);
+    return resp.id.toString();
   } catch (Exception) {
     print(Exception);
     return "0";

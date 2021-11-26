@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:till/constants/themes.dart';
+import 'package:till/scripts/cloud_firestore.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart' as c;
 import 'package:till/globals.dart' as globals;
 import 'package:till/pages/addcard.dart' as addcard;
@@ -31,6 +33,7 @@ class _CardsState extends State<Cards> {
     List<c.Cards> lista = [];
     lista.add(c.Cards());
     globals.cards.forEach((element) {
+      print(element.id);
       lista.add(element as c.Cards);
     });
     if (busqueda) _buscarTarjetas();
@@ -85,7 +88,7 @@ class _CardsState extends State<Cards> {
                       }
                       return InkWell(
                           onTap: () {
-                            _showDialog(context, index);
+                            _showDialog(context, index, lista);
                           },
                           child: Hero(
                               tag: '',
@@ -215,6 +218,7 @@ class _CardsState extends State<Cards> {
                                 }));
                       },
                       child: Container(
+                        height: 50,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
@@ -235,258 +239,78 @@ class _CardsState extends State<Cards> {
                   ));
   }
 
-  Widget hayTarjeta() {
-    return Scaffold(
-      key: _keyScaf,
-      appBar: AppBar(
-        title: Text('Mis tarjetas'),
-        actions: <Widget>[
-          FlatButton.icon(
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed('/AddCard',
-                      arguments: ArgumentsAddaCard(false, 1000))
-                  .then((value) => setState(() {}));
-            },
-            icon: Icon(
-              Icons.add_circle_outline,
-              color: Theme.of(context).secondaryHeaderColor,
-            ),
-            label: Text(""),
-          )
-        ],
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: ListView.builder(
-          itemCount: globals.cards.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-                onTap: () {
-                  _showDialog(context, index);
-                },
-                child: Hero(
-                    tag: '',
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: SizedBox(
-                        height: 230,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          //color: Colors.grey[300],
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: LinearGradient(
-                                    begin: Alignment.bottomLeft,
-                                    end: Alignment.topRight,
-                                    colors: [Colors.black, Colors.black54])),
-                            child: Column(
-                              children: <Widget>[
-                                Row(children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.all(25),
-                                    alignment: Alignment.centerLeft,
-                                    width: 90,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        image: globals.cards[index]
-                                                    .paymentMethod!.id !=
-                                                ""
-                                            ? DecorationImage(
-                                                image: new AssetImage(
-                                                    MetodoPago(globals
-                                                        .cards[index]
-                                                        .paymentMethod!
-                                                        .id
-                                                        .toString())),
-                                                fit: BoxFit.contain,
-                                              )
-                                            : null,
-                                        borderRadius: BorderRadius.circular(10),
-                                        gradient: LinearGradient(
-                                            begin: Alignment.bottomLeft,
-                                            end: Alignment.topRight,
-                                            colors: [
-                                              Colors.white70,
-                                              Colors.white70
-                                            ])),
-                                  ),
-                                ]),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(children: <Widget>[
-                                  SizedBox(
-                                    width: 23,
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(0),
-                                      child: Text(
-                                        '**** **** **** ' +
-                                            globals.cards[index].lastFourDigits
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontSize: 40, color: Colors.white),
-                                      ))
-                                ]),
-                                Row(children: <Widget>[
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.all(0),
-                                      child: Text(
-                                        globals.cards[index].cardholder!.name
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 16, color: Colors.white),
-                                      )),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text(
-                                    globals.cards[index].expirationMonth
-                                            .toString() +
-                                        '/' +
-                                        globals.cards[index].expirationYear
-                                            .toString()
-                                            .substring(2, 4),
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.white),
-                                  )
-                                ]),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )));
-          }),
-    );
-  }
-
-  Widget noHayTarjeta() {
-    return Scaffold(
-      key: _keyScaf,
-      appBar: AppBar(
-        title: Text('Mis tarjetas'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: ListView.builder(
-          itemCount: 1,
-          itemBuilder: (context, index) {
-            return InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .pushNamed('/AddCard',
-                          arguments: ArgumentsAddaCard(false, 1000))
-                      .then((value) => setState(() {
-                            busqueda = true;
-                          }));
-                },
-                child: Hero(
-                    tag: '',
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: SizedBox(
-                        height: 230,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 5,
-                          //color: Colors.grey[300],
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: LinearGradient(
-                                    begin: Alignment.bottomLeft,
-                                    end: Alignment.topRight,
-                                    colors: [Colors.grey, Colors.black54])),
-                            child: Center(
-                              child: Column(children: <Widget>[
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Text(
-                                  "Añadir nueva tarjeta",
-                                  style: TextStyle(
-                                      fontSize: 30, color: Colors.white),
-                                ),
-                                Text(
-                                  "+",
-                                  style: TextStyle(
-                                      fontSize: 100, color: Colors.white38),
-                                )
-                              ]),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )));
-          }),
-    );
-  }
-
-  void _showDialog(BuildContext context, int index) {
-    GlobalKey keyText = GlobalKey<EditableTextState>();
-    final _textFieldController = TextEditingController();
+  void _showDialog(BuildContext context, int index, List<c.Cards> tarjetas) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Center(
-                        child: Text(
-                      '¿Desea eliminar esta tarjeta?',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    )),
-                    Center(
-                      child: ButtonBar(
-                        children: <Widget>[
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Cancelar",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              )),
-                          FlatButton(
-                              onPressed: () async {
-                                EliminarTarjeta(
-                                    globals.usuario!.id_customer_mp.toString(),
-                                    globals.cards[index].id.toString());
-                                await _buscarTarjetas();
-                                Navigator.pop(context);
-                                setState(() {
-                                  _mostrarMensaje(
-                                      "La tarjeta se elimino correctamente!");
-                                  busqueda = true;
-                                });
-                              },
-                              child: Text(
-                                "Eliminar",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ))
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            title: const Text(
+              'Quieres eliminar esta tarjeta?',
+              style: TextStyle(
+                color: Color(0xff02253d),
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            content: Text(
+              tarjetas[index].paymentMethod!.id.toString()+
+              ' terminada en ' +
+                  tarjetas[index].lastFourDigits.toString(),
+              style: TextStyle(
+                color: Color(0xff02253d),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: new Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: Color(0xfff4074e),
+                  ),
+                ),
+              ),
+              RaisedButton(
+                onPressed: () async {
+                  EliminarTarjeta(globals.usuario!.id_customer_mp.toString(),
+                      globals.cards[index-1].id.toString());
+                  DeleteCardDb delete = DeleteCardDb(globals.usuario!.id.toString(),
+                      globals.cards[index-1].id.toString());
+                  delete.docID();
+                  await _buscarTarjetas();
+                  Navigator.pop(context);
+                  setState(() {
+                    _mostrarMensaje("La tarjeta se elimino correctamente!");
+                    busqueda = true;
+                  });
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6)),
+                padding: const EdgeInsets.all(0.0),
+                child: Ink(
+                  width: 160,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: Colores.combinacion1),
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  ),
+                  child: Container(
+                    constraints:
+                        const BoxConstraints(minWidth: 88.0, minHeight: 45.0),
+                    // min sizes for Material buttons
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Eliminar tarjeta',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         });
   }

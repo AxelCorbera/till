@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:till/scripts/db/json/tarjetas_firestore.dart';
 import 'package:till/globals.dart' as globals;
-import 'mercadopago/json/baseDatos.dart';
 
 class AddUser {
   final String uid;
@@ -32,7 +31,7 @@ class AddUser {
       'departamento': '',
       'cuil': '',
       'id_customer_mp': '',
-      'id_card_mp': '',
+      'id_card_mp': '[]',
       'persona': 'fisica',
       'razon_social': '',
       'token': token,
@@ -97,4 +96,109 @@ class UpdateUser
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
+}
+
+class AddCardDb {
+  final String uid;
+  final String id;
+  final String numeros;
+  List<TarjetasFirestore> tarjetas = [];
+
+  AddCardDb(this.uid, this.id, this.numeros);
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<String> docID() async{
+    String did = '';
+    await FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        print(doc['uid'] +' > '+ this.uid);
+        if(doc['uid'] == uid) {
+          did = doc.id;
+          tarjetas = tarjetasFirestoreFromJson(doc['id_card_mp']);
+          tarjetas.add(TarjetasFirestore(id: id, numeros: numeros));
+          print('tarjetas >: ' +tarjetasFirestoreToJson(this.tarjetas));
+        }
+      });
+    })
+        .then((value1) => updateCard(did));
+    print('doc > $did');
+    return did;
+  }
+
+  Future<void> updateCard(String docId) async{
+    print('tarjetas a actualizar: ' +tarjetasFirestoreToJson(this.tarjetas));
+    Map<String, String> tarj = {
+      "id_card_mp":tarjetasFirestoreToJson(this.tarjetas)
+    };
+    return users
+        .doc(docId)
+        .update(tarj)
+        .then((value2) => done())
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  done() {
+    print('tarjetas actualizadas firestore');
+    globals.numeroTarjetas = tarjetas;
+  }
+
+}
+
+class DeleteCardDb {
+  final String uid;
+  final String id;
+  List<TarjetasFirestore> tarjetas = [];
+
+  DeleteCardDb(this.uid, this.id);
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<String> docID() async{
+    String did = '';
+    await FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        print(doc['uid'] +' > '+ this.uid);
+        if(doc['uid'] == uid) {
+          did = doc.id;
+          tarjetas = tarjetasFirestoreFromJson(doc['id_card_mp']);
+          print('tarjetas: ' + tarjetas.length.toString());
+          for(int i =0 ; i < tarjetas.length ; i++){
+            if(tarjetas[i].id == this.id){
+              tarjetas.remove(tarjetas[i]);
+              print('tarjetas >: ' +tarjetasFirestoreToJson(this.tarjetas));
+              break;
+            }
+          }
+        }
+      });
+    })
+        .then((value1) => updateCard(did));
+    print('doc > $did');
+    return did;
+  }
+
+  Future<void> updateCard(String docId) async{
+    print('tarjetas a actualizar: ' +tarjetasFirestoreToJson(this.tarjetas));
+    Map<String, String> tarj = {
+      "id_card_mp":tarjetasFirestoreToJson(this.tarjetas)
+    };
+    return users
+        .doc(docId)
+        .update(tarj)
+        .then((value2) => done())
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  done() {
+    print('tarjetas actualizadas firestore');
+    globals.numeroTarjetas = tarjetas;
+  }
+
 }

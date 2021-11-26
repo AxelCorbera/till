@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:till/provider/authentication_service.dart';
+import 'package:till/scripts/db/json/tarjetas_firestore.dart';
 import 'package:till/scripts/request.dart' as request;
 import 'package:till/scripts/album.dart' as album;
 import 'package:till/scripts/request.dart' as request;
@@ -306,6 +307,7 @@ class _LoginState extends State<Login> {
             globals.usuario!.token = result.get('token');
             globals.usuario!.id_customer_mp = result.get('id_customer_mp');
             globals.usuario!.id_card_mp = result.get('id_card_mp');
+            globals.numeroTarjetas = tarjetasFirestoreFromJson(result.get('id_card_mp'));
             globals.usuario!.provincia = result.get('provincia');
             globals.usuario!.municipio = result.get('municipio');
             globals.usuario!.localidad = result.get('localidad');
@@ -362,6 +364,7 @@ class _LoginState extends State<Login> {
                       globals.usuario!.token = result.get('token');
                       globals.usuario!.id_customer_mp = result.get('id_customer_mp');
                       globals.usuario!.id_card_mp = result.get('id_card_mp');
+                      globals.numeroTarjetas = tarjetasFirestoreFromJson(result.get('id_card_mp'));
                       globals.usuario!.provincia = result.get('provincia');
                       globals.usuario!.municipio = result.get('municipio');
                       globals.usuario!.localidad = result.get('localidad');

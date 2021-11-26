@@ -10,69 +10,73 @@ String saveCardToJson(SaveCard data) => json.encode(data.toJson());
 
 class SaveCard {
   SaveCard({
-    this.id,
+    this.cardNumberId,
+    this.cardholder,
+    this.customerId,
+    this.dateCreated,
+    this.dateLastUpdated,
     this.expirationMonth,
     this.expirationYear,
     this.firstSixDigits,
+    this.id,
+    this.issuer,
     this.lastFourDigits,
+    this.liveMode,
     this.paymentMethod,
     this.securityCode,
-    this.issuer,
-    this.cardholder,
-    this.dateCreated,
-    this.dateLastUpdated,
-    this.customerId,
     this.userId,
-    this.liveMode,
   });
 
-  int? id;
-  int? expirationMonth;
-  int? expirationYear;
-  int? firstSixDigits;
-  int? lastFourDigits;
-  PaymentMethod? paymentMethod;
-  SecurityCode? securityCode;
-  Issuer? issuer;
+  dynamic? cardNumberId;
   Cardholder? cardholder;
+  String? customerId;
   DateTime? dateCreated;
   DateTime? dateLastUpdated;
-  String? customerId;
-  int? userId;
+  int? expirationMonth;
+  int? expirationYear;
+  String? firstSixDigits;
+  String? id;
+  Issuer? issuer;
+  String? lastFourDigits;
   bool? liveMode;
+  PaymentMethod? paymentMethod;
+  SecurityCode? securityCode;
+  String? userId;
 
   factory SaveCard.fromJson(Map<String, dynamic> json) => SaveCard(
-    id: json["id"],
+    cardNumberId: json["card_number_id"],
+    cardholder: Cardholder.fromJson(json["cardholder"]),
+    customerId: json["customer_id"],
+    dateCreated: DateTime.parse(json["date_created"]),
+    dateLastUpdated: DateTime.parse(json["date_last_updated"]),
     expirationMonth: json["expiration_month"],
     expirationYear: json["expiration_year"],
     firstSixDigits: json["first_six_digits"],
+    id: json["id"],
+    issuer: Issuer.fromJson(json["issuer"]),
     lastFourDigits: json["last_four_digits"],
+    liveMode: json["live_mode"],
     paymentMethod: PaymentMethod.fromJson(json["payment_method"]),
     securityCode: SecurityCode.fromJson(json["security_code"]),
-    issuer: Issuer.fromJson(json["issuer"]),
-    cardholder: Cardholder.fromJson(json["cardholder"]),
-    dateCreated: DateTime.parse(json["date_created"]),
-    dateLastUpdated: DateTime.parse(json["date_last_updated"]),
-    customerId: json["customer_id"],
     userId: json["user_id"],
-    liveMode: json["live_mode"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "card_number_id": cardNumberId,
+    "cardholder": cardholder!.toJson(),
+    "customer_id": customerId,
+    "date_created": dateCreated!.toIso8601String(),
+    "date_last_updated": dateLastUpdated!.toIso8601String(),
     "expiration_month": expirationMonth,
     "expiration_year": expirationYear,
     "first_six_digits": firstSixDigits,
+    "id": id,
+    "issuer": issuer!.toJson(),
     "last_four_digits": lastFourDigits,
+    "live_mode": liveMode,
     "payment_method": paymentMethod!.toJson(),
     "security_code": securityCode!.toJson(),
-    "issuer": issuer!.toJson(),
-    "cardholder": cardholder!.toJson(),
-    "date_created": dateCreated!.toIso8601String(),
-    "date_last_updated": dateLastUpdated!.toIso8601String(),
-    "customer_id": customerId,
     "user_id": userId,
-    "live_mode": liveMode,
   };
 }
 
@@ -102,7 +106,7 @@ class Identification {
     this.type,
   });
 
-  int? number;
+  String? number;
   String? type;
 
   factory Identification.fromJson(Map<String, dynamic> json) => Identification(

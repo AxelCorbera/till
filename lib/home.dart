@@ -30,26 +30,6 @@ class argumentsHome {
 
 class _HomeState extends State<Home> {
   String menu = 'home';
-  List<String> categoriasNombres = [
-    'Alimentos',
-    'Golosinas',
-    'Juguetes',
-    'Ropa',
-    'Accesorios',
-    'Higiene',
-    'Piedras',
-    'Pipetas'
-  ];
-  List<String> categoriasIconos = [
-    'lib/assets/icons/dog-food-pet.png',
-    'lib/assets/icons/snack.png',
-    'lib/assets/icons/toy.png',
-    'lib/assets/icons/clothes.png',
-    'lib/assets/icons/leash.png',
-    'lib/assets/icons/shampoo.png',
-    'lib/assets/icons/urinary.png',
-    'lib/assets/icons/pipette.png'
-  ];
   int carrito = globals.carrito.id.length;
 
   @override
@@ -174,7 +154,8 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Theme.of(context).primaryColor,
-                          image: globals.usuario!.foto != ''
+                          image: globals.usuario!.foto != null
+                          && globals.usuario!.foto != ''
                               ? DecorationImage(
                                   image: NetworkImage(
                                       globals.usuario!.foto.toString()),

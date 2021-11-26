@@ -7,6 +7,7 @@ import 'package:till/pages/address.dart';
 import 'package:till/pages/address_info.dart';
 import 'package:till/pages/my_account.dart';
 import 'package:till/pages/my_information.dart';
+import 'package:till/pages/respuesta_pago.dart';
 import 'package:till/pages/scan_products.dart';
 import 'package:till/provider/google_sing_in.dart';
 import 'package:till/pages/login.dart';

@@ -671,7 +671,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
 
     _cargando();
 
-    String token = await CardToken(datos);
+    String token = await CardToken(datos,"Till");
     print('token card $token');
     final respuesta = await GuardarTarjeta(token);
     print("respuesta a guardar tarjeta > " + respuesta.toString());
@@ -688,7 +688,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
     //   TarjetaPago t = new TarjetaPago(datos, respuesta, cuotas);
     //   Navigator.pop(context, t);
     // }else{
-    TarjetaPago t = new TarjetaPago(datos, token, cuotas);
+    TarjetaPago t = new TarjetaPago(datos, '', token, cuotas);
     Navigator.pop(context, t);
     // }
   }
@@ -706,12 +706,18 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
     datos.docNum = _textFieldControllerDocument.value.text.replaceAll(".", "");
     datos.cvv = _textFieldControllerSecCode.value.text;
 
-    String token = await CardToken(datos);
+    print(datos.ano);
+
+    String token = await CardToken(datos,"Till");
     print("token > " + token);
     final respuesta = await GuardarTarjeta(token);
     print("respuesta a guardar tarjeta > " + respuesta.toString());
 
     if (respuesta.toString() != "0") {
+      AddCardDb addBd = AddCardDb(globals.usuario!.id.toString(),
+          respuesta,
+          datos.numeros.toString());
+      addBd.docID();
       _mostrarMensaje("La tarjeta se guardo correctamente!");
       Navigator.pop(context);
     } else {
@@ -845,6 +851,7 @@ class _AddCardState extends State<AddCard> with SingleTickerProviderStateMixin {
 class TarjetaPago {
   final DatosTarjeta datosTarj;
   final idTarjeta;
+  final ultimosCuatro;
   final Cuotas cuotasTarj;
-  TarjetaPago(this.datosTarj, this.idTarjeta, this.cuotasTarj);
+  TarjetaPago(this.datosTarj, this.ultimosCuatro, this.idTarjeta, this.cuotasTarj);
 }

@@ -1,12 +1,17 @@
 library till.globals;
 
 import 'package:till/scripts/db/json/listado.dart';
+import 'package:till/scripts/db/json/tarjetas_firestore.dart';
 import 'package:till/scripts/mercadopago/cardsJson.dart';
 import 'package:till/scripts/request.dart';
+
+List<TarjetasFirestore> numeroTarjetas = [];
 
 Listado listado = Listado();
 
 bool ingreso = false;
+
+String comercio = '';
 
 Usuario? usuario =
     Usuario("", "", "", "", "", "", "", "", "", "", "", "", "", "","","",

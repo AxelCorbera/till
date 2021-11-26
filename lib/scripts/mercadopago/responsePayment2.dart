@@ -101,7 +101,7 @@ class ResponsePayment2 {
   AdditionalInfo? additionalInfo;
   Order? order;
   String? externalReference;
-  int? transactionAmount;
+  double? transactionAmount;
   int? transactionAmountRefunded;
   int? couponAmount;
   dynamic differentialPricingId;

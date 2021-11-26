@@ -539,11 +539,15 @@ Future<CreateCustomer> crearCustomer(Datos customerDatos) async {
 }
 
 Future<ResponsePayment2> CrearPago(Payment payment) async {
-//print(globals.accessToken);
+
+  while (globals.accessTokenComercio == "") {
+    await request.ClavesComercio(globals.accessTokenComercio);
+  }
+
   final response = await http.post(
     Uri.parse('https://api.mercadopago.com/v1/payments?'),
     headers: <String, String>{
-      'Authorization': 'Bearer '+globals.accessToken,
+      'Authorization': 'Bearer '+ globals.accessTokenComercio,
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     },
     body: jsonEncode(payment),
@@ -630,6 +634,35 @@ Future<Credenciales> Claves(String usuario) async { ///// TILL
     Credenciales cred = Credenciales.fromJson(jsonDecode(response.body));
     globals.accessToken = cred.accessToken!;
     globals.publicKey = cred.publicKey!;
+    return cred;
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to create album.');
+  }
+}
+Future<Credenciales> ClavesComercio(String usuario) async {
+
+  print('comercio $usuario');
+  ///// TILL
+  Map map = new Map<String, dynamic>();
+  map['usuario'] = usuario;
+
+  final response = await http.post(
+    Uri.parse('http://wh534614.ispot.cc/credenciales.php'),
+    headers: <String, String>{
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    },
+    body: map,
+  );
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    // If the server did return a 200 CREATED response,
+    // then parse the JSON.
+    print('credencialesComercio ' + jsonDecode(response.body).toString());
+    Credenciales cred = Credenciales.fromJson(jsonDecode(response.body));
+    globals.accessTokenComercio = cred.accessToken!;
+    globals.publicKeyComercio = cred.publicKey!;
     return cred;
   } else {
     // If the server did not return a 201 CREATED response,

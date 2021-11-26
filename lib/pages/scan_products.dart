@@ -34,11 +34,32 @@ class _Scan_ProductsState extends State<Scan_Products> {
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Quieres salir de la tienda?'),
-            content: const Text('Se perderan los productos del carro'),
+            title: const Text('Quieres salir de la tienda?',
+            style: TextStyle(
+              color: Color(0xff02253d),
+                fontWeight: FontWeight.bold,
+            ),),
+            content: const Text('Se perderan los productos del carro',
+              style: TextStyle(
+                color: Color(0xff02253d),
+                              ),),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
+                  globals.carrito = Carrito(
+                      id: [],
+                      codigo: [],
+                      marca: [],
+                      nombre: [],
+                      cantidad: [],
+                      stock: [],
+                      precio: [],
+                      imagen: [],
+                      descuento: [],
+                      tope: []);
+                  globals.accessTokenComercio = '';
+                  globals.publicKeyComercio = '';
+                  globals.comercio = '';
                   globals.ingreso = false;
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -46,11 +67,44 @@ class _Scan_ProductsState extends State<Scan_Products> {
                     (Route<dynamic> route) => false,
                   );
                 },
-                child: new Text('Salir'),
+                child: new Text('Salir',
+                  style: TextStyle(
+                    color: Color(0xfff4074e),
+                  ),
+                ),
               ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('Seguir comprando'),
+              RaisedButton(
+                onPressed: () {
+                  scan = true;
+                  setState(() {
+                    producto = Producto(id: '');
+                  });
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6)),
+                padding: const EdgeInsets.all(0.0),
+                child: Ink(
+                  width: 160,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: Colores.combinacion1),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(6)),
+                  ),
+                  child: Container(
+                    constraints: const BoxConstraints(
+                        minWidth: 88.0, minHeight: 45.0),
+                    // min sizes for Material buttons
+                    alignment: Alignment.center,
+                    child: Text('Seguir comprando',
+                      style: TextStyle(
+                          color: Colors.white
+                      ),),
+                  ),
+                ),
               ),
             ],
           ),

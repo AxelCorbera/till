@@ -10,6 +10,8 @@ import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:till/scripts/request.dart';
+
 class Scan_QR extends StatefulWidget {
   _Scan_QRState createState() => _Scan_QRState();
 }
@@ -201,6 +203,8 @@ class _Scan_QRState extends State<Scan_QR> {
     if(globals.ingreso==false){
     for (int i = 0; i < comercios.qr!.length; i++) {
       if (comercios.qr![i] == qr) {
+        globals.comercio = comercios.razonsocial![i];
+        await ClavesComercio(comercios.razonsocial![i]);
         globals.ingreso = true;
         globals.listado = await cargarListado(comercios.razonsocial![i]);
         print(globals.listado.id!.length.toString() + 'productos cargados');

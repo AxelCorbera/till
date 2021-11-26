@@ -50,7 +50,8 @@ class _my_AccountState extends State<My_Account> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Theme.of(context).primaryColor,
-                          image: globals.usuario!.foto!=''?
+                          image: globals.usuario!.foto != null
+                              && globals.usuario!.foto != ''?
                           DecorationImage(
                               image:
                               NetworkImage(globals.usuario!.foto.toString()),

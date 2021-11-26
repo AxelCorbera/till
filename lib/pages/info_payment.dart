@@ -15,6 +15,7 @@ class Info_Payment extends StatefulWidget {
 }
 
 class _InfoPaymentState extends State<Info_Payment> {
+
   List<Cards> tarjetas = [];
   bool efectivo = false;
   bool tarjeta = false;
@@ -34,11 +35,14 @@ class _InfoPaymentState extends State<Info_Payment> {
       globals.usuario!.departamento.toString());
   Direcciones dir = new Direcciones();
   addcard.TarjetaPago tarjetaSeleccionada =
-      addcard.TarjetaPago(DatosTarjeta(), '', Cuotas());
+      addcard.TarjetaPago(DatosTarjeta(), '', '', Cuotas());
   Cuotas cuo = Cuotas();
   GlobalKey<FormState> _keyForm = GlobalKey();
 
   Widget build(BuildContext context) {
+    if(globals.cards.isEmpty) {
+      _buscarTarjetas();
+    }
     total = Sumar(globals.carrito.precio, globals.carrito.cantidad);
 
     tarjetas.clear();
@@ -46,7 +50,7 @@ class _InfoPaymentState extends State<Info_Payment> {
       tarjetas.add(element as Cards);
     });
 
-    if(tarjetas.isNotEmpty && cuotas == false){
+    if (tarjetas.isNotEmpty && cuotas == false) {
       _consultarCuotas(globals.cards[0]);
     }
     return Scaffold(
@@ -89,6 +93,21 @@ class _InfoPaymentState extends State<Info_Payment> {
                     const SizedBox(
                       width: 5,
                     ),
+                    if (domicilio.calle != '')
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          domicilio.calle +
+                              ' ' +
+                              domicilio.numero.toString() +
+                              ', ' +
+                              domicilio.localidad,
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     Container(
                       width: 280,
                       child: RaisedButton(
@@ -108,17 +127,6 @@ class _InfoPaymentState extends State<Info_Payment> {
                               ),
                       ),
                     ),
-                    if (domicilio.calle != '')
-                      Text(
-                        domicilio.calle +
-                            ' ' +
-                            domicilio.numero.toString() +
-                            ', ' +
-                            domicilio.localidad,
-                        style: TextStyle(
-                          color: Colores.rojo,
-                        ),
-                      ),
                     Center(
                       child: Container(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -141,11 +149,9 @@ class _InfoPaymentState extends State<Info_Payment> {
                               onTap: () {},
                               onSaved: (value) {},
                               onChanged: (value) {
-                                recuotas=false;
+                                recuotas = false;
                                 _consultarCuotas(value as Cards);
-                                setState(() {
-
-                                });
+                                setState(() {});
                               },
                               hint: const Text(
                                 'Seleccioná una tarjeta',
@@ -167,7 +173,7 @@ class _InfoPaymentState extends State<Info_Payment> {
                             width: 280,
                             child: RaisedButton(
                               onPressed: () async {
-                               _nuevaTarjeta();
+                                _nuevaTarjeta();
                               },
                               child: Text(
                                 'Nueva tarjeta',
@@ -176,101 +182,117 @@ class _InfoPaymentState extends State<Info_Payment> {
                               ),
                             ),
                           ),
-                    if(tarjetaSeleccionada.datosTarj.numeros != null &&
-                            tarjetaSeleccionada.idTarjeta != '0'
-                    ) recuotas?
-                    Center(
-                            child: Container(
-                              width: double.infinity,
-                              height: 120,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Container(
-                                      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                                      width: 280,
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Cuotas',
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                      )),
-                                  Form(
-                                    child: Container(
-                                      width: 280,
-                                      height: 60,
-                                      child: DropdownButtonFormField(
-                                        onTap: () {},
-                                        onSaved: (value) {},
-                                        onChanged: (value) {
-                                          int i = _cuotas().indexOf(value as String);
-                                          cuotaSeleccionadaLista = i;
-                                          cuotaSeleccionada =
-                                              value.toString().substring(0, 2);
-                                          cuotaSeleccionada = cuotaSeleccionada
-                                              .replaceAll(' ', '');
-                                          print('cuotas $cuotaSeleccionada<');
-                                          setState(() {});
-                                        },
-                                        hint: Text(
-                                          'Seleccionar cuotas',
+                    if (tarjetaSeleccionada.datosTarj.numeros != null &&
+                        tarjetaSeleccionada.idTarjeta != '0')
+                      recuotas
+                          ? Center(
+                              child: Container(
+                                width: double.infinity,
+                                height: 120,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                        width: 280,
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Cuotas',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        )),
+                                    Form(
+                                      child: Container(
+                                        width: 280,
+                                        height: 60,
+                                        child: DropdownButtonFormField(
+                                          onTap: () {},
+                                          onSaved: (value) {},
+                                          onChanged: (value) {
+                                            int i = _cuotas()
+                                                .indexOf(value as String);
+                                            cuotaSeleccionadaLista = i;
+                                            cuotaSeleccionada = value
+                                                .toString()
+                                                .substring(0, 2);
+                                            cuotaSeleccionada =
+                                                cuotaSeleccionada.replaceAll(
+                                                    ' ', '');
+                                            print('cuotas $cuotaSeleccionada<');
+                                            setState(() {});
+                                          },
+                                          hint: Text(
+                                            'Seleccionar cuotas',
+                                          ),
+                                          isExpanded: true,
+                                          items: _cuotas().map((String val) {
+                                            return DropdownMenuItem(
+                                              value: val,
+                                              child: Text(
+                                                val,
+                                              ),
+                                            );
+                                          }).toList(),
                                         ),
-                                        isExpanded: true,
-                                        items: _cuotas().map((String val) {
-                                          return DropdownMenuItem(
-                                            value: val,
-                                            child: Text(
-                                              val,
-                                            ),
-                                          );
-                                        }).toList(),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ):CircularProgressIndicator(
-
-                    ),
+                            )
+                          : CircularProgressIndicator(),
                   ],
                 ),
+            //     cuotas == true &&
+            // globals.cards.isNotEmpty
+            //         ?
                 Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      child: Text(cuotaSeleccionada != '1'?
-                      'Total: \$' + cuo.payerCosts![cuotaSeleccionadaLista].totalAmount!.toStringAsFixed(2):
-                        'Total: \$' + total.toStringAsFixed(2),
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                    ),
-        if(cuotaSeleccionada != '1')
-                    Container(
-                      child:
-                          Text(
-                              cuo.payerCosts![cuotaSeleccionadaLista].recommendedMessage.toString(),
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(
+                              cuotaSeleccionada != '1'
+                              && globals.cards.isNotEmpty
+                              && cuotas == true
+                                  ? 'Total: \$' +
+                                      cuo.payerCosts![cuotaSeleccionadaLista]
+                                          .totalAmount!
+                                          .toStringAsFixed(2)
+                                  : 'Total: \$' + total.toStringAsFixed(2),
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
+                          ),
+                          if (cuotaSeleccionada != '1'
+                              && globals.cards.isNotEmpty
+                              && cuotas == true)
+                            Container(
+                                child: Text(
+                              cuo.payerCosts![cuotaSeleccionadaLista]
+                                  .recommendedMessage
+                                  .toString(),
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
-                            )
-                    ),
-                  ],
-                ),
+                            )),
+                        ],
+                      ),
+                    // : SizedBox(
+                    //     child: CircularProgressIndicator(),
+                    //   ),
                 Center(
                   child: RaisedButton(
                       color: Theme.of(context).primaryColor,
-                      onPressed:
-                              globals.usuario!.calle != '' &&
-                                  tarjetaSeleccionada.idTarjeta!=''
+                      onPressed: globals.usuario!.calle != '' &&
+                              tarjetaSeleccionada.idTarjeta != ''
                           ? () {
                               String number = total.toStringAsFixed(2);
                               total = double.parse(number);
@@ -662,9 +684,7 @@ class _InfoPaymentState extends State<Info_Payment> {
 
   List<String> _cuotas() {
     List<String> c = [];
-    for (int i = 0;
-        i < cuotasMaximas;
-        i++) {
+    for (int i = 0; i < cuotasMaximas; i++) {
       String s = tarjetaSeleccionada.cuotasTarj.payerCosts![i].installments
               .toString() +
           ' cuotas de \$' +
@@ -679,21 +699,23 @@ class _InfoPaymentState extends State<Info_Payment> {
     setState(() {});
   }
 
-  void _nuevaTarjeta() async{
-    tarjetaSeleccionada = await Navigator.push(
+  void _nuevaTarjeta() async {
+
+    // tarjetaSeleccionada = await Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => addcard.AddCard(pago: false, total: total)),
+    // );
+    //Navigator.pop(context);
+      await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => addcard.AddCard(
-              pago: false, total: total)),
-    );
-    //Navigator.pop(context);
-    setState(() {
+          builder: (context) => addcard.AddCard(pago: false, total: total)),
+    ).then((value) => _actualizar());
 
-    });
   }
 
   Future<void> _consultarCuotas(Cards tarjeta) async {
-
     DatosTarjeta tarj = DatosTarjeta(
         numeros: tarjeta.firstSixDigits.toString(),
         nombre: tarjeta.cardholder!.name.toString(),
@@ -701,18 +723,34 @@ class _InfoPaymentState extends State<Info_Payment> {
         ano: tarjeta.expirationYear.toString(),
         docTipo: tarjeta.cardholder!.identification!.type.toString(),
         docNum: tarjeta.cardholder!.identification!.number.toString(),
-        cvv: "123"
-    );
+        cvv: "123");
     print('asdasd1');
     cuo = await request.Cuotas(
-        tarjeta.firstSixDigits.toString(),
-        total.toString());
-      print('asdasd');
-    tarjetaSeleccionada =  addcard.TarjetaPago(tarj, globals.cards[0].id, cuo);
+        tarjeta.firstSixDigits.toString(), total.toString());
+    print('asdasd');
+    tarjetaSeleccionada = addcard.TarjetaPago(
+        tarj, tarjeta.lastFourDigits, tarjeta.id, cuo);
     setState(() {
-      cuotas =true;
+      cuotas = true;
       recuotas = true;
     });
+  }
+
+  Future _buscarTarjetas() async {
+    print("buscando tarjetas..");
+    if (globals.usuario!.id_customer_mp != "") {
+      List<Cards> tarjetas = await request.BuscarTarjetas(globals
+          .usuario!.id_customer_mp
+          .toString());
+      globals.cards = List.from(tarjetas);
+      print('tarjeta id' + tarjetas[0].id.toString());
+      setState(() {
+
+      });
+      if (tarjetas.length > 0 && tarjetas[0].error != null) {
+        print('error: ' + tarjetas[0].error.toString());
+      }
+    }
   }
 }
 
