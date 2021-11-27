@@ -31,7 +31,9 @@ class _Respuesta_PagoState extends State<Respuesta_Pago> {
     return Scaffold(
         body: widget.pago.status == 'approved'?
             aprobado():
-            rechazado(),
+        widget.pago.status == 'rejected'?
+            rechazado():
+        pendiente(),
     );
   }
 
@@ -145,10 +147,149 @@ class _Respuesta_PagoState extends State<Respuesta_Pago> {
                         (Route<dynamic> route) => false,
                   );
                 },
-                  color: Colores.azulOscuro,
                   child: Text('Salir',
                     style: TextStyle(
                         color: Colores.rojo,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold
+                    ),),),
+              ),
+              // Text('¡Gracias por elegirnos!',
+              //   style: TextStyle(
+              //       color: Colores.rojo,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 17
+              //   ),),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget pendiente(){
+    return Column(
+      children: <Widget>[
+        Container(
+          height: MediaQuery.of(context).size.height/2.5,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("lib/assets/images/fondoPendiente.png"),
+                fit: BoxFit.contain
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.error_outline,
+                color: Colors.blueAccent,
+                size: 40,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Pago pendiente',
+                  style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20
+                  ),),
+              ),
+              Text('Su pago se esta procesando',
+                style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 13
+                ),)
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width/1.15,
+          height: MediaQuery.of(context).size.height/1.7,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(height: 10,),
+              Text('Estamos procesando tu pago',
+                style: TextStyle(
+                    color: Colores.azulOscuro,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
+                ),),
+              Text('No te preocupes, menos de 2 días'
+                  ' hábiles te avisaremos por e-mail'
+                  ' si se acreditó o si necesitamos'
+                  ' más información.',
+                style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14
+                ),
+              textAlign: TextAlign.center,),
+              // SizedBox(height: 10,),
+              // Text('Total a abonar: \$ '+ widget.pago.transactionAmount.toString(),
+              //   style: TextStyle(
+              //       color: Colores.azulOscuro,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 20
+              //   ),),
+              Text('Total: \$ '+ widget.pago.transactionAmount.toString(),
+                style: TextStyle(
+                    color: Colores.azulOscuro,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                ),),
+              Text('Pago con ' +
+                  widget.pago.paymentMethodId.toString().toUpperCase() +
+                  ' terminada en '+
+                  widget.pago.card!.lastFourDigits.toString(),
+                style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 15
+                ),),
+              if(widget.pago.installments! > 1)
+                Text(widget.pago.installments!.toString() +
+                    ' cuotas de '+
+                    widget.pago.transactionDetails!.installmentAmount.toString(),
+                  style: TextStyle(
+                      color: Colores.azulOscuro,
+                      fontSize: 15
+                  ),),
+              SizedBox(height: 10,),
+              Text('Puedes ver el estado del pago en '
+                  'la pantalla de inicio.',
+                style: TextStyle(
+                    color: Colores.azulOscuro,
+                    fontSize: 14
+                ),
+                textAlign: TextAlign.center,),
+              Container(
+                width: 280,
+                child: RaisedButton(onPressed: (){
+                  globals.carrito = Carrito(
+                      id: [],
+                      codigo: [],
+                      marca: [],
+                      nombre: [],
+                      cantidad: [],
+                      stock: [],
+                      precio: [],
+                      imagen: [],
+                      descuento: [],
+                      tope: []);
+                  globals.accessTokenComercio = '';
+                  globals.publicKeyComercio = '';
+                  globals.comercio = '';
+                  globals.ingreso = false;
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) =>
+                        Home()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
+                  color: Colores.azulOscuro,
+                  child: Text('Continuar',
+                    style: TextStyle(
+                        color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.bold
                     ),),),

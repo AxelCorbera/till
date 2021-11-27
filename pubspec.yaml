@@ -84,6 +84,7 @@ flutter:
   - lib/assets/images/fondoOscuro.jpg
   - lib/assets/images/fondoAprobado.png
   - lib/assets/images/fondoRechazado.png
+  - lib/assets/images/fondoPendiente.png
   - lib/assets/icons/avatarDocumento.png
   - lib/assets/icons/logosMetodoPago/amex.png
   - lib/assets/icons/logosMetodoPago/argencard.jpg

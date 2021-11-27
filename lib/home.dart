@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
               if (snapshop.connectionState == ConnectionState.waiting) {
                 return Text("Inicio");
               } else {
-                if (globals.login) {
+                if (globals.login == true) {
                   return Text(
                       'Hola ' + globals.usuario!.nombre.toString() + '!');
                 } else {
