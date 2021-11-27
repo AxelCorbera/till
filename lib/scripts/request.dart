@@ -335,18 +335,19 @@ Future<String> Registrarse(
   }
 }
 
+//TILL
 Future<db.Compras> BuscarCompras(
     String idUsuario) async {
   Map map = new Map<String, dynamic>();
     map['idusuario'] = idUsuario;
 
   final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/consultaCompras.php?idusuario=$idUsuario'),
+    Uri.parse('http://wh534614.ispot.cc/consultaCompras.php?idusuario=$idUsuario'),
     headers: <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     },
   );
-  print('http://wh534614.ispot.cc/mypetshop/flutter/consultaCompras.php?idusuario=$idUsuario');
+  print('http://wh534614.ispot.cc/consultaCompras.php?idusuario=$idUsuario');
   if (response.statusCode == 200 || response.statusCode == 201) {
 
     //DEVUELVE ARRAY
@@ -359,77 +360,77 @@ Future<db.Compras> BuscarCompras(
   }
 }
 
-Future<FotoMascotas> BuscarFotoMascotas(
-    String idUsuario) async {
+// Future<FotoMascotas> BuscarFotoMascotas(
+//     String idUsuario) async {
+//
+//   final response = await http.get(
+//     Uri.parse('http://wh534614.ispot.cc/mypetshop/consultarFotoMascota.php?id=$idUsuario'),
+//     headers: <String, String>{
+//       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+//     },
+//   );
+//   print('http://wh534614.ispot.cc/mypetshop/consultarFotoMascota.php?id=$idUsuario');
+//   if (response.statusCode == 200 || response.statusCode == 201) {
+//
+//     //DEVUELVE ARRAY
+//
+//     return FotoMascotas.fromJson(jsonDecode(response.body));
+//   } else {
+//     // If the server did not return a 201 CREATED response,
+//     // then throw an exception.
+//     throw Exception('Fallo la busqueda de foto de mascota.');
+//   }
+// }
 
-  final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/consultarFotoMascota.php?id=$idUsuario'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-  );
-  print('http://wh534614.ispot.cc/mypetshop/consultarFotoMascota.php?id=$idUsuario');
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    //DEVUELVE ARRAY
-
-    return FotoMascotas.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Fallo la busqueda de foto de mascota.');
-  }
-}
-
-Future<String> CargarFoto(String idUsuario, String idMascota, String nombre, String imagen) async {
-  Map datos = new Map<String, String>();
-  datos["idusuario"] = idUsuario;
-  datos["idmascota"] = idMascota;
-  datos["nombre"] = nombre;
-  datos["imagen"] = imagen;
-
-  final response = await http.post(
-    Uri.parse(
-        'http://wh534614.ispot.cc/mypetshop/cargarFoto.php?'),
-    body: datos,
-  );
-  return response.body.toString();
-}
-
-Future<String> ActualizarFoto(String customer, String mascotas, String nombre, String imagen) async {
-  Map datos = new Map<String, String>();
-  datos["idusuario"] = customer;
-  datos["idmascota"] = mascotas;
-  datos["nombre"] = nombre;
-  datos["imagen"] = imagen;
-
-  final response = await http.post(
-    Uri.parse(
-        'http://wh534614.ispot.cc/mypetshop/actualizarFoto.php?'),
-    body: datos,
-  );
-  return response.body.toString();
-}
-
-Future<String> BorrarFoto(
-    String idUsuario, String idMascota) async {
-
-  final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/eliminarFoto.php?idusuario=$idUsuario&idmascota=$idMascota'),
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    },
-  );
-
-  if (response.statusCode == 200 || response.statusCode == 201) {
-
-    return response.body;
-  } else {
-    // If the server did not return a 201 CREATED response,
-    // then throw an exception.
-    throw Exception('Fallo la busqueda de Mascotas.');
-  }
-}
+// Future<String> CargarFoto(String idUsuario, String idMascota, String nombre, String imagen) async {
+//   Map datos = new Map<String, String>();
+//   datos["idusuario"] = idUsuario;
+//   datos["idmascota"] = idMascota;
+//   datos["nombre"] = nombre;
+//   datos["imagen"] = imagen;
+//
+//   final response = await http.post(
+//     Uri.parse(
+//         'http://wh534614.ispot.cc/mypetshop/cargarFoto.php?'),
+//     body: datos,
+//   );
+//   return response.body.toString();
+// }
+//
+// Future<String> ActualizarFoto(String customer, String mascotas, String nombre, String imagen) async {
+//   Map datos = new Map<String, String>();
+//   datos["idusuario"] = customer;
+//   datos["idmascota"] = mascotas;
+//   datos["nombre"] = nombre;
+//   datos["imagen"] = imagen;
+//
+//   final response = await http.post(
+//     Uri.parse(
+//         'http://wh534614.ispot.cc/mypetshop/actualizarFoto.php?'),
+//     body: datos,
+//   );
+//   return response.body.toString();
+// }
+//
+// Future<String> BorrarFoto(
+//     String idUsuario, String idMascota) async {
+//
+//   final response = await http.get(
+//     Uri.parse('http://wh534614.ispot.cc/mypetshop/eliminarFoto.php?idusuario=$idUsuario&idmascota=$idMascota'),
+//     headers: <String, String>{
+//       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+//     },
+//   );
+//
+//   if (response.statusCode == 200 || response.statusCode == 201) {
+//
+//     return response.body;
+//   } else {
+//     // If the server did not return a 201 CREATED response,
+//     // then throw an exception.
+//     throw Exception('Fallo la busqueda de Mascotas.');
+//   }
+// }
 
 Future<List<Cards>> BuscarTarjetas(String idCustomer) async {
   //    SI NO HAY TARJETAS, TIRA ERROR !
@@ -688,7 +689,7 @@ Future<String> CargarCompra(db.Compra c)
   map['query'] = query;
 
   final response = await http.get(
-    Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/cargarcompra.php?query=$query'),
+    Uri.parse('http://wh534614.ispot.cc/cargarcompra.php?query=$query'),
     headers: <String, String>{
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     }
@@ -721,7 +722,7 @@ async {
   map['query'] = query;
 
   final response = await http.get(
-      Uri.parse('http://wh534614.ispot.cc/mypetshop/flutter/consultaridcompra.php?query=$query'),
+      Uri.parse('http://wh534614.ispot.cc/consultaridcompra.php?query=$query'),
       headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       }

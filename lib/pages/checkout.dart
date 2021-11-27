@@ -807,7 +807,7 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
   }
 
   Future<String> _cargarCompra(payment.ResponsePayment2 pago) async {
-    print('cargar compra 1');
+
     db.Datos d = db.Datos(items: []);
     for (int i = 0; i < globals.carrito.cantidad.length; i++) {
       db.Item item = db.Item(
@@ -816,15 +816,16 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
           codigo: globals.carrito.codigo[i],
           precio: globals.carrito.precio[i].toString());
       d.items.add(item);
+      print('item a cargar: '+item.toJson().toString());
     }
-    print('cargar compra 2');
+
     db.Compra c = db.Compra(
         id: '',
         fecha: DateTime.now().toString(),
         hora: '',
         cliente: globals.usuario!.id.toString(),
         comercio: '',
-        nombreComercio: '',
+        nombreComercio: globals.comercio,
         productos: db.datosToJson(d),
         total: widget.total.toString(),
         pago: widget.tarjeta.cuotasTarj.paymentMethodId,
@@ -839,11 +840,11 @@ class _CheckoutState extends State<Checkout> with TickerProviderStateMixin {
         totalCuota: pago.transactionDetails!.totalPaidAmount.toString(),
         detalle: '',
         telefono: telefono);
-    print('cargar compra 4');
+
     String respuesta = await request.CargarCompra(c);
-    print('cargar compra 5');
+
     if (respuesta == 'Se cargo la compra!') {
-      print('cargar compra 6');
+
       ticket = await request.ConsultarIdCompra(c);
       print('numero ticket: $ticket');
     }

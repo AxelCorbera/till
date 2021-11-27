@@ -343,6 +343,7 @@ class _purchaseDetailsState extends State<PurchaseDetails>
   }
 
   Datos _productos(String prod) {
+    print('producto: $prod');
     Datos datos = Datos.fromJson(jsonDecode(prod));
         //datos.fromJson(jsonDecode(prod));
     return datos;

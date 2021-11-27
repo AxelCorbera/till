@@ -506,7 +506,12 @@ class _Scan_ProductsState extends State<Scan_Products> {
                                 carrito.id.add(carrito.id.length.toString());
                                 carrito.codigo.add(producto.codigo.toString());
                                 carrito.marca.add('');
-                                carrito.nombre.add(producto.nombre.toString());
+                                String p = producto.nombre.toString();
+                                while(producto.nombre.toString().endsWith('\r') ||
+                                    producto.nombre.toString().endsWith('\n')) {
+                                  p = producto.nombre.toString().substring(0,producto.nombre!.length-1);
+                                }
+                                carrito.nombre.add(p);
                                 carrito.cantidad.add(cantidad);
                                 carrito.stock.add('100');
                                 carrito.precio.add(

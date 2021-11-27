@@ -18,7 +18,10 @@ import 'package:till/pages/cart.dart';
 import 'package:till/pages/cards.dart';
 import 'package:till/pages/checkout.dart';
 import 'package:till/pages/info_payment.dart';
+import 'package:till/pages/purcharses.dart';
+import 'package:till/scenes/purchasedetails.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
+import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 
 import 'home.dart';
 
@@ -63,6 +66,11 @@ class MyApp extends StatelessWidget {
               return Info_Payment();
             case '/Address':
               return addAddress();
+            case '/Purchases':
+              return Purchases();
+            case '/PurchaseDetails':
+              final args = settings.arguments as Compra;
+              return PurchaseDetails(compra: args);
             case '/Cards':
               return Cards();
             case '/AddCard':

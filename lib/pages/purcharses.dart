@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:till/constants/themes.dart';
 import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'package:till/scripts/request.dart';
 import 'package:till/globals.dart' as globals;
@@ -14,6 +15,7 @@ class _PurchasesState extends State<Purchases> {
   bool filtroTodos = true;
   bool filtroApro = false;
   bool filtroRecha = false;
+  bool filtroProce = false;
   String menu = 'home';
   bool busqueda = true;
   Compras compras = new Compras(
@@ -45,12 +47,15 @@ class _PurchasesState extends State<Purchases> {
         ? _buscarCompras("")
         : filtroApro
             ? _buscarCompras("aprobado")
-            : _buscarCompras("rechazado");
+            : filtroRecha?
+    _buscarCompras("rechazado"):
+    _buscarCompras("proceso");
     print("KKKKK " + busqueda.toString());
     carrito = globals.carrito.id.length;
     return Scaffold(
       appBar: appbar("Ultimas compras"),
-      body: !busqueda
+      body: busqueda == false
+      && compras.id!.length > 0
           ? Stack(children: <Widget>[
               Container(
                 //color: Colors.red,
@@ -69,6 +74,7 @@ class _PurchasesState extends State<Purchases> {
                           filtroTodos = true;
                           filtroApro = false;
                           filtroRecha = false;
+                          filtroProce = false;
                           setState(() {});
                         }
                       },
@@ -96,6 +102,7 @@ class _PurchasesState extends State<Purchases> {
                           filtroTodos = false;
                           filtroApro = true;
                           filtroRecha = false;
+                          filtroProce = false;
                           setState(() {});
                         }
                       },
@@ -123,6 +130,7 @@ class _PurchasesState extends State<Purchases> {
                           filtroTodos = false;
                           filtroApro = false;
                           filtroRecha = true;
+                          filtroProce = false;
                           setState(() {});
                         }
                       },
@@ -138,6 +146,34 @@ class _PurchasesState extends State<Purchases> {
                                               Theme.of(context).primaryColor)))
                               : null,
                           child: Text('Rechazados')),
+                    ),
+                    Text("|",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        )),
+                    GestureDetector(
+                      onTap: () {
+                        if(filtroProce == false) {
+                          busqueda = true;
+                          filtroTodos = false;
+                          filtroApro = false;
+                          filtroRecha = false;
+                          filtroProce = true;
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                        // optional
+                          padding: const EdgeInsets.all(5),
+                          decoration: filtroProce
+                              ? BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 2.0,
+                                      color:
+                                      Theme.of(context).primaryColor)))
+                              : null,
+                          child: Text('En proceso')),
                     ),
                   ],
                 ),
@@ -203,21 +239,25 @@ class _PurchasesState extends State<Purchases> {
                                                               .start,
                                                       children: [
                                                         compras.estado![index] ==
-                                                                    "approved" ||
-                                                                compras.estado![
-                                                                        index] ==
-                                                                    "pagado"
+                                                                    "approved"
                                                             ? Icon(
-                                                                Icons.error_outline,
+                                                                Icons.done,
                                                                 color: Colors
                                                                     .green[700],
                                                                 size: 15,
                                                               )
-                                                            : Icon(
-                                                            Icons.error_outline,
+                                                            : compras.estado![index] ==
+                                                            "rejected"
+                                                            ? Icon(
+                                                            Icons.cancel_outlined,
                                                                 color: Colors
                                                                     .red[700],
-                                                                size: 15),
+                                                                size: 15):
+                                                        Icon(
+                                                            Icons.error_outline,
+                                                            color: Colors
+                                                                .blueAccent,
+                                                            size: 15),
                                                       ],
                                                     ),
                                                   ),
@@ -261,7 +301,7 @@ class _PurchasesState extends State<Purchases> {
                                                         fontSize: 12,
                                                         fontWeight:
                                                         FontWeight
-                                                            .bold)):Text("Error: "+ compras.estado![index],
+                                                            .bold)):Text("En proceso",
                                                     style: TextStyle(
                                                         color:
                                                         Colors.grey,
@@ -328,7 +368,16 @@ class _PurchasesState extends State<Purchases> {
                 ),
               ),
             ])
-          : Center(
+          : busqueda == false
+          && compras.id!.length == 0?
+      Center(
+        child: Text('No se han realizado compras',
+        style: TextStyle(
+          color: Colores.azulOscuro,
+          fontSize: 20
+        ),),
+      ):
+        Center(
               child: CircularProgressIndicator(),
             ),
     );
@@ -376,6 +425,7 @@ class _PurchasesState extends State<Purchases> {
   }
 
   void _buscarCompras(String filtro) async {
+    print('filtro recha: ' +filtroRecha.toString());
     if (busqueda) {
       print("usuario>> " + globals.usuario!.id.toString());
       compras = await BuscarCompras(globals.usuario!.id.toString());
@@ -400,7 +450,7 @@ class _PurchasesState extends State<Purchases> {
 
         if (filtro == "aprobado") {
           for (var i in compras.estado!) {
-            if (i == "approved" || i == "pagado") {
+            if (i == "approved") {
               int a = compras.estado!.indexOf(i);
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
@@ -420,9 +470,31 @@ class _PurchasesState extends State<Purchases> {
               filtroCompra.telefono!.add(compras.telefono![a]);
             }
           }
-        } else {
+        } else if (filtro == "rechazado") {
           for (var i in compras.estado!) {
-            if (i != "approved" && i != "pagado") {
+            if (i == "rejected") {
+              int a = compras.estado!.indexOf(i);
+              filtroCompra.id!.add(compras.id![a]);
+              filtroCompra.fecha!.add(compras.fecha![a]);
+              filtroCompra.cliente!.add(compras.cliente![a]);
+              filtroCompra.productos!.add(compras.productos![a]);
+              filtroCompra.total!.add(compras.total![a]);
+              filtroCompra.estado!.add(compras.estado![a]);
+              filtroCompra.tarjeta!.add(compras.tarjeta![a]);
+              filtroCompra.pago!.add(compras.pago![a]);
+              filtroCompra.documento!.add(compras.documento![a]);
+              filtroCompra.token!.add(compras.token![a]);
+              filtroCompra.cuotas!.add(compras.cuotas![a]);
+              filtroCompra.montoCuota!.add(compras.montoCuota![a]);
+              filtroCompra.totalCuota!.add(compras.totalCuota![a]);
+              filtroCompra.idPago!.add(compras.idPago![a]);
+              filtroCompra.detalle!.add(compras.detalle![a]);
+              filtroCompra.telefono!.add(compras.telefono![a]);
+            }
+          }
+        } else{
+          for (var i in compras.estado!) {
+            if (i != "approved" && i != "rejected") {
               int a = compras.estado!.indexOf(i);
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
