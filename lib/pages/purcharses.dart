@@ -60,148 +60,98 @@ class _PurchasesState extends State<Purchases> {
               _filtro(),
               Transform(
                 transform: Matrix4.translationValues(0, 60, 0),
-                child: Container(
-                  child: ListView.builder(
-                      itemCount: compras.id!.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed('/PurchaseDetails',
-                                    arguments: Compra(
-                                        id: compras.id![index],
-                                        fecha: compras.fecha![index],
-                                        cliente: compras.cliente![index],
-                                        productos: compras.productos![index],
-                                        total: compras.total![index],
-                                        pago: compras.pago![index],
-                                        estado: compras.estado![index],
-                                        tarjeta: compras.tarjeta![index],
-                                        idPago: compras.idPago![index],
-                                        documento: compras.documento![index],
-                                        token: compras.token![index],
-                                        cuotas: compras.cuotas![index],
-                                        montoCuota: compras.montoCuota![index],
-                                        totalCuota: compras.totalCuota![index],
-                                        detalle: compras.detalle![index],
-                                        telefono: compras.telefono![index]))
-                                .then((value) => setState(() {}));
-                          },
-                          child: Hero(
-                            tag: compras.id!.length,
-                            child: Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.all(0),
-                                  child: Card(
-                                    margin: EdgeInsets.all(0),
-                                    color: Colors.white60,
-                                    semanticContainer: true,
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Container(
-                                                    width: 0,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        compras.estado![index] ==
-                                                                    "approved"
-                                                            ? Icon(
-                                                                Icons.done,
-                                                                color: Colors
-                                                                    .green[700],
-                                                                size: 15,
-                                                              )
-                                                            : compras.estado![index] ==
-                                                            "rejected"
-                                                            ? Icon(
-                                                            Icons.cancel_outlined,
-                                                                color: Colors
-                                                                    .red[700],
-                                                                size: 15):
-                                                        Icon(
-                                                            Icons.error_outline,
-                                                            color: Colors
-                                                                .blueAccent,
-                                                            size: 15),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: 150,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          compras.nombreComercio![index] +
-                                                              ' - Ticket ' +
-                                                              compras
-                                                                  .id![index],
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 4,
-                                                        ),compras.estado![index]=="approved"?
-                                                        Text(
-                                                          "Aprobado",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ):compras.estado![index]=="rejected"?
-                                                  Text(
-                                                    "Rechazado",
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.grey,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)):Text("En proceso",
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.grey,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
+                child: Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width/1.05,
+                    child: ListView.builder(
+                        itemCount: compras.id!.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed('/PurchaseDetails',
+                                      arguments: Compra(
+                                          id: compras.id![index],
+                                          fecha: compras.fecha![index],
+                                          cliente: compras.cliente![index],
+                                          productos: compras.productos![index],
+                                          total: compras.total![index],
+                                          pago: compras.pago![index],
+                                          estado: compras.estado![index],
+                                          tarjeta: compras.tarjeta![index],
+                                          idPago: compras.idPago![index],
+                                          documento: compras.documento![index],
+                                          token: compras.token![index],
+                                          cuotas: compras.cuotas![index],
+                                          montoCuota: compras.montoCuota![index],
+                                          totalCuota: compras.totalCuota![index],
+                                          detalle: compras.detalle![index],
+                                          telefono: compras.telefono![index]))
+                                  .then((value) => setState(() {}));
+                            },
+                            child: Hero(
+                              tag: compras.id!.length,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Center(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceEvenly,
+                                              children: [
+                                                Container(
+                                                  width: 20,
+                                                  child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      compras.estado![index] ==
+                                                                  "approved"
+                                                          ? Icon(
+                                                              Icons.done,
+                                                              color: Colors
+                                                                  .green[700],
+                                                              size: 20,
+                                                            )
+                                                          : compras.estado![index] ==
+                                                          "rejected"
+                                                          ? Icon(
+                                                          Icons.cancel_outlined,
+                                                              color: Colors
+                                                                  .red[700],
+                                                              size: 20):
+                                                      Icon(
+                                                          Icons.error_outline,
+                                                          color: Colors
+                                                              .blueAccent,
+                                                          size: 15),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: 150,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
-                                                        "\$" +
+                                                        compras.nombreComercio![index] +
+                                                            ' - Ticket ' +
                                                             compras
-                                                                .total![index],
+                                                                .id![index],
                                                         style: TextStyle(
+                                                            color:
+                                                                Colors.black,
                                                             fontSize: 16,
                                                             fontWeight:
                                                                 FontWeight
@@ -209,43 +159,85 @@ class _PurchasesState extends State<Purchases> {
                                                       ),
                                                       SizedBox(
                                                         height: 4,
-                                                      ),
+                                                      ),compras.estado![index]=="approved"?
                                                       Text(
-                                                        compras.fecha![index],
+                                                        "Aprobado",
                                                         style: TextStyle(
-                                                            color: Colors.grey,
+                                                            color:
+                                                                Colors.grey,
                                                             fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold),
-                                                      ),
+                                                      ):compras.estado![index]=="rejected"?
+                                                Text(
+                                                  "Rechazado",
+                                                  style: TextStyle(
+                                                      color:
+                                                      Colors.grey,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .bold)):Text("En proceso",
+                                                  style: TextStyle(
+                                                      color:
+                                                      Colors.grey,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .bold)),
                                                     ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      "\$" +
+                                                          compras
+                                                              .total![index],
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .bold),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Text(
+                                                      compras.fecha![index],
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: new Divider(
-                                    endIndent: 20,
-                                    indent: 20,
-                                    color: Colors.black,
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: new Divider(
+                                      endIndent: 20,
+                                      indent: 20,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        }),
+                  ),
                 ),
               ),
             ])

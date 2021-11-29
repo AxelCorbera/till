@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:till/constants/themes.dart';
 import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'package:till/globals.dart' as globals;
 
@@ -23,22 +24,16 @@ class _purchaseDetailsState extends State<PurchaseDetails>
   @override
   Widget build(BuildContext context) {
     productos = _productos(widget.compra.productos);
-    print("> " + cant.toString());
     return Scaffold(
       key: _scaffKey,
-      backgroundColor: Colors.white38,
+      backgroundColor: Colors.white,
       appBar: appbar("Detalle de la compra"),
       body: Center(
         child: Hero(
           tag: widget.compra.id,
-          child: Card(
-            margin: EdgeInsets.only(left: 15, right: 15, top: 25, bottom: 25),
-            color: Colors.grey[200],
-            elevation: 20,
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: cardConteiner(widget.compra, context),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: cardConteiner(widget.compra, context),
           ),
         ),
       ),
@@ -70,41 +65,65 @@ class _purchaseDetailsState extends State<PurchaseDetails>
               children: [
                 Text(
                   "Operacion #" + compra.id,
-                  style: TextStyle(fontSize: 13),
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                 ),
                 Text(
                   "  ·  Creadada el " +
                       date.day.toString() +
-                  '-'+
-                  date.month.toString() +
-                  '-'+
-                  date.year.toString(),
-                  style: TextStyle(fontSize: 13),
+                      '-' +
+                      date.month.toString() +
+                      '-' +
+                      date.year.toString(),
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                 ),
               ],
             ),
             Divider(
               height: 50,
               color: Colors.black,
+              indent: 25,
+              endIndent: 25,
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Column(
                     children: [
-                      Text("Cantidad"),
+                      Container(
+                        width: 60,
+                        child: Text(
+                          "Cantidad",
+                          style: TextStyle(
+                              color: Color(0xff02253d),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ],
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Producto"),
+                      Container(
+                        width: 200,
+                        child: Text(
+                          "Producto",
+                          style: TextStyle(
+                              color: Color(0xff02253d),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ],
                   ),
                   Column(
-                    children: [
-                      Text("Precio"),
+                    children: const [
+                      Text(
+                        "Precio",
+                        style: TextStyle(
+                            color: Color(0xff02253d),
+                            fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                 ],
@@ -114,17 +133,12 @@ class _purchaseDetailsState extends State<PurchaseDetails>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: _buildRowList(productos),
             ),
-            new Divider(
-              height: 50,
-              color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('TOTAL: \$ ' + compra.total.toString(),
+                  style: TextStyle(fontSize: 20, color: Colores.rojo)),
             ),
-            Text('Total: \$ ' + compra.total.toString(),
-                style: TextStyle(fontSize: 20)),
           ],
-        ),
-        new Divider(
-          height: 50,
-          color: Colors.grey,
         ),
         Container(
           margin: EdgeInsets.all(5),
@@ -132,34 +146,31 @@ class _purchaseDetailsState extends State<PurchaseDetails>
           width: 60,
           height: 40,
           decoration: BoxDecoration(
-              image: compra.pago != "" || compra.pago != "efectivo"
-                  ? DecorationImage(
-                image: new AssetImage(
-                    _MetodoPago(compra.pago.toString())),
-                fit: BoxFit.contain,
-              )
-                  : null,
-              borderRadius: BorderRadius.circular(10),
-              gradient: LinearGradient(
-                  begin: Alignment.bottomLeft,
-                  end: Alignment.topRight,
-                  colors: [
-                    Colors.white70,
-                    Colors.transparent
-                  ])),
+            image: compra.pago != "" || compra.pago != "efectivo"
+                ? DecorationImage(
+                    image: AssetImage(_MetodoPago(compra.pago.toString())),
+                    fit: BoxFit.contain,
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
         Column(
           children: <Widget>[
             compra.pago != "" || compra.pago != "efectivo"
-                ?
-            Text(" ** terminada en " + compra.tarjeta.toString()+" ** "):
-            Text("Efectivo"),
+                ? Text(
+                    "Terminada en " + compra.tarjeta.toString(),
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                  )
+                : Text("Efectivo"),
             SizedBox(
               height: 20,
             ),
-            Text("#" + compra.id.toString(),style: TextStyle(color: Colors.grey[600]),),
-            Text("status > " + compra.estado.toString(),style: TextStyle(color: Colors.grey[600]),),
-            Text(compra.fecha.toString() ,style: TextStyle(color: Colors.grey[600]),),
+            // Text("#" + compra.id.toString(),style: TextStyle(color: Colors.grey[600]),),
+            // Text("status > " + compra.estado.toString(),style: TextStyle(color: Colors.grey[600]),),
+            // Text(compra.fecha.toString() ,style: TextStyle(color: Colors.grey[600]),),
           ],
         )
       ]),
@@ -330,20 +341,80 @@ class _purchaseDetailsState extends State<PurchaseDetails>
   List<Widget> _buildRowList(Datos lista) {
     List<Widget> lines = []; // this will hold Rows according to available lines
     for (var line in lista.items) {
-      lines.add(Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-          Text(line.cantidad),
-          line.nombre.length<30?
-          Text(line.nombre):Text(line.nombre.substring(0,25) + "\n" + line.nombre.substring(25,line.nombre.length)),
-          Text("\$ " + _precio(line.precio.toString())),
-        ]),
+      lines.add(Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20,0,20,0),
+            child: Container(
+              height: 50,
+              child:
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                Column(
+                  children: [
+                    Container(
+                      width: 60,
+                      child: Text(
+                        line.cantidad,
+                        //textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 200,
+                      child: Text(
+                        // line.nombre.length < 30
+                        //     ?
+                        line.nombre,
+                            // : line.nombre.substring(0, 25) +
+                            //     "\n" +
+                            //     line.nombre.substring(25, line.nombre.length),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "\$ " + _precio(line.precio.toString()),
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ]),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10,0,10,0),
+            child: Divider(
+              height: 15,
+              color: Colors.black,
+              indent: 25,
+              endIndent: 25,
+            ),
+          ),
+        ],
       ));
     }
     return lines;
   }
 
-  String _precio(String a){
+  String _precio(String a) {
     double d = double.parse(a);
     return d.toStringAsFixed(2);
   }
@@ -351,7 +422,7 @@ class _purchaseDetailsState extends State<PurchaseDetails>
   Datos _productos(String prod) {
     print('producto: $prod');
     Datos datos = Datos.fromJson(jsonDecode(prod));
-        //datos.fromJson(jsonDecode(prod));
+    //datos.fromJson(jsonDecode(prod));
     return datos;
   }
 
