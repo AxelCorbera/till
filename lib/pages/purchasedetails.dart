@@ -52,6 +52,7 @@ class _purchaseDetailsState extends State<PurchaseDetails>
   // ANIMATIONICON
 
   Widget cardConteiner(Compra compra, BuildContext context) {
+    DateTime date = DateTime.parse(compra.fecha);
     AnimationController controller = AnimationController(
       vsync: this,
     );
@@ -72,7 +73,12 @@ class _purchaseDetailsState extends State<PurchaseDetails>
                   style: TextStyle(fontSize: 13),
                 ),
                 Text(
-                  "· Creadada el " + compra.fecha,
+                  "  ·  Creadada el " +
+                      date.day.toString() +
+                  '-'+
+                  date.month.toString() +
+                  '-'+
+                  date.year.toString(),
                   style: TextStyle(fontSize: 13),
                 ),
               ],

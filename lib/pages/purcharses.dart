@@ -57,127 +57,7 @@ class _PurchasesState extends State<Purchases> {
       body: busqueda == false
       && compras.id!.length > 0
           ? Stack(children: <Widget>[
-              Container(
-                //color: Colors.red,
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.all(5),
-                width: double.infinity,
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        if(filtroTodos == false) {
-                          busqueda = true;
-                          filtroTodos = true;
-                          filtroApro = false;
-                          filtroRecha = false;
-                          filtroProce = false;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                          // optional
-                          padding: const EdgeInsets.all(5),
-                          decoration: filtroTodos
-                              ? BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 2.0,
-                                          color:
-                                              Theme.of(context).primaryColor)))
-                              : null,
-                          child: Text('Todos')),
-                    ),
-                    Text("|",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        if(filtroApro == false) {
-                          busqueda = true;
-                          filtroTodos = false;
-                          filtroApro = true;
-                          filtroRecha = false;
-                          filtroProce = false;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                          // optional
-                          padding: const EdgeInsets.all(5),
-                          decoration: filtroApro
-                              ? BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 2.0,
-                                          color:
-                                              Theme.of(context).primaryColor)))
-                              : null,
-                          child: Text('Aprobados')),
-                    ),
-                    Text("|",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        if(filtroRecha == false) {
-                          busqueda = true;
-                          filtroTodos = false;
-                          filtroApro = false;
-                          filtroRecha = true;
-                          filtroProce = false;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                          // optional
-                          padding: const EdgeInsets.all(5),
-                          decoration: filtroRecha
-                              ? BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 2.0,
-                                          color:
-                                              Theme.of(context).primaryColor)))
-                              : null,
-                          child: Text('Rechazados')),
-                    ),
-                    Text("|",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        )),
-                    GestureDetector(
-                      onTap: () {
-                        if(filtroProce == false) {
-                          busqueda = true;
-                          filtroTodos = false;
-                          filtroApro = false;
-                          filtroRecha = false;
-                          filtroProce = true;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                        // optional
-                          padding: const EdgeInsets.all(5),
-                          decoration: filtroProce
-                              ? BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      width: 2.0,
-                                      color:
-                                      Theme.of(context).primaryColor)))
-                              : null,
-                          child: Text('En proceso')),
-                    ),
-                  ],
-                ),
-              ),
+              _filtro(),
               Transform(
                 transform: Matrix4.translationValues(0, 60, 0),
                 child: Container(
@@ -269,7 +149,8 @@ class _PurchasesState extends State<Purchases> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          "Compra " +
+                                                          compras.nombreComercio![index] +
+                                                              ' - Ticket ' +
                                                               compras
                                                                   .id![index],
                                                           style: TextStyle(
@@ -370,12 +251,17 @@ class _PurchasesState extends State<Purchases> {
             ])
           : busqueda == false
           && compras.id!.length == 0?
-      Center(
-        child: Text('No se han realizado compras',
-        style: TextStyle(
-          color: Colores.azulOscuro,
-          fontSize: 20
-        ),),
+      Column(
+        children: [
+          _filtro(),
+          Center(
+            child: Text('Ningun resultado',
+            style: TextStyle(
+              color: Colores.azulOscuro,
+              fontSize: 20
+            ),),
+          ),
+        ],
       ):
         Center(
               child: CircularProgressIndicator(),
@@ -424,6 +310,130 @@ class _PurchasesState extends State<Purchases> {
         ]);
   }
 
+  Widget _filtro(){
+    return Container(
+      //color: Colors.red,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.all(5),
+      width: double.infinity,
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              if(filtroTodos == false) {
+                busqueda = true;
+                filtroTodos = true;
+                filtroApro = false;
+                filtroRecha = false;
+                filtroProce = false;
+                setState(() {});
+              }
+            },
+            child: Container(
+              // optional
+                padding: const EdgeInsets.all(5),
+                decoration: filtroTodos
+                    ? BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            width: 2.0,
+                            color:
+                            Theme.of(context).primaryColor)))
+                    : null,
+                child: Text('Todos')),
+          ),
+          Text("|",
+              style: TextStyle(
+                color: Colors.grey,
+              )),
+          GestureDetector(
+            onTap: () {
+              if(filtroApro == false) {
+                busqueda = true;
+                filtroTodos = false;
+                filtroApro = true;
+                filtroRecha = false;
+                filtroProce = false;
+                setState(() {});
+              }
+            },
+            child: Container(
+              // optional
+                padding: const EdgeInsets.all(5),
+                decoration: filtroApro
+                    ? BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            width: 2.0,
+                            color:
+                            Theme.of(context).primaryColor)))
+                    : null,
+                child: Text('Aprobados')),
+          ),
+          Text("|",
+              style: TextStyle(
+                color: Colors.grey,
+              )),
+          GestureDetector(
+            onTap: () {
+              if(filtroRecha == false) {
+                busqueda = true;
+                filtroTodos = false;
+                filtroApro = false;
+                filtroRecha = true;
+                filtroProce = false;
+                setState(() {});
+              }
+            },
+            child: Container(
+              // optional
+                padding: const EdgeInsets.all(5),
+                decoration: filtroRecha
+                    ? BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            width: 2.0,
+                            color:
+                            Theme.of(context).primaryColor)))
+                    : null,
+                child: Text('Rechazados')),
+          ),
+          Text("|",
+              style: TextStyle(
+                color: Colors.grey,
+              )),
+          GestureDetector(
+            onTap: () {
+              if(filtroProce == false) {
+                busqueda = true;
+                filtroTodos = false;
+                filtroApro = false;
+                filtroRecha = false;
+                filtroProce = true;
+                setState(() {});
+              }
+            },
+            child: Container(
+              // optional
+                padding: const EdgeInsets.all(5),
+                decoration: filtroProce
+                    ? BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            width: 2.0,
+                            color:
+                            Theme.of(context).primaryColor)))
+                    : null,
+                child: Text('En proceso')),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _buscarCompras(String filtro) async {
     print('filtro recha: ' +filtroRecha.toString());
     if (busqueda) {
@@ -434,6 +444,7 @@ class _PurchasesState extends State<Purchases> {
             id: [],
             fecha: [],
             cliente: [],
+            nombreComercio: [],
             productos: [],
             total: [],
             estado: [],
@@ -455,6 +466,7 @@ class _PurchasesState extends State<Purchases> {
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
               filtroCompra.cliente!.add(compras.cliente![a]);
+              filtroCompra.nombreComercio!.add(compras.nombreComercio![a]);
               filtroCompra.productos!.add(compras.productos![a]);
               filtroCompra.total!.add(compras.total![a]);
               filtroCompra.estado!.add(compras.estado![a]);
@@ -477,6 +489,7 @@ class _PurchasesState extends State<Purchases> {
               filtroCompra.id!.add(compras.id![a]);
               filtroCompra.fecha!.add(compras.fecha![a]);
               filtroCompra.cliente!.add(compras.cliente![a]);
+              filtroCompra.nombreComercio!.add(compras.nombreComercio![a]);
               filtroCompra.productos!.add(compras.productos![a]);
               filtroCompra.total!.add(compras.total![a]);
               filtroCompra.estado!.add(compras.estado![a]);
@@ -500,6 +513,7 @@ class _PurchasesState extends State<Purchases> {
               filtroCompra.fecha!.add(compras.fecha![a]);
               filtroCompra.cliente!.add(compras.cliente![a]);
               filtroCompra.productos!.add(compras.productos![a]);
+              filtroCompra.nombreComercio!.add(compras.nombreComercio![a]);
               filtroCompra.total!.add(compras.total![a]);
               filtroCompra.estado!.add(compras.estado![a]);
               filtroCompra.tarjeta!.add(compras.tarjeta![a]);
