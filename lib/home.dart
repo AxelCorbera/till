@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    print(FirebaseAuth.instance.authStateChanges());
     this.carrito = globals.carrito.id.length;
     return Scaffold(
       appBar: AppBar(
@@ -223,21 +224,21 @@ class _HomeState extends State<Home> {
                       Icons.campaign,
                       color: Theme.of(context).primaryColor,
                     ),
-                    trailing: Container(
-                      width: 20,
-                      decoration: BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
-                      child: Center(
-                        child: Text(
-                          '1',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
+                    // trailing: Container(
+                    //   width: 20,
+                    //   decoration: BoxDecoration(
+                    //       color: Colors.red, shape: BoxShape.circle),
+                    //   child: Center(
+                    //     child: Text(
+                    //       '1',
+                    //       style: TextStyle(
+                    //           color: Colors.white, fontWeight: FontWeight.bold),
+                    //     ),
+                    //   ),
+                    // ),
                     onTap: () {
                       globals.login
-                          ? Navigator.pushNamed(context, '/Home')
+                          ? Navigator.pushNamed(context, '/Notifications')
                           : _unlogin(context);
                     },
                   ),
@@ -249,7 +250,7 @@ class _HomeState extends State<Home> {
                     ),
                     onTap: () {
                       globals.login
-                          ? Navigator.pushNamed(context, '/Purchases')
+                          ? Navigator.pushNamed(context, '/Support')
                           : _unlogin(context);
                     },
                   ),
@@ -329,6 +330,26 @@ class _HomeState extends State<Home> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('username', '');
     prefs.setString('password', '');
+    prefs.setString('gId', '');
+    prefs.setString('gCorreo', '');
+    prefs.setString('gNombre', '');
+    prefs.setString('gDocumento', '');
+    prefs.setString('gTelefono', '');
+    prefs.setString('gPersona', '');
+    prefs.setString('gCuil', '');
+    prefs.setString('gRazonSocial', '');
+    prefs.setString('gToken', '');
+    prefs.setString('gIdCustomerMp', '');
+    prefs.setString('gIdCardMp', '');
+    prefs.setString('gProvincia', '');
+    prefs.setString('gMunicipio', '');
+    prefs.setString('gLocalidad', '');
+    prefs.setString('gCalle', '');
+    prefs.setString('gNumero', '');
+    prefs.setString('gPiso', '');
+    prefs.setString('gDepartamento', '');
+    prefs.setString('gFoto', '');
+    prefs.setBool('login', false);
     globals.usuario = Usuario("", "", "", "", "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "");
   }
@@ -382,9 +403,37 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    carrito = globals.carrito.id.length;
-    if (globals.login) {
+    autoLogIn();
+  }
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? login = prefs.getBool('login');
+
+    if (login == true) {
+      globals.usuario!.id = prefs.getString('gId');
+      globals.usuario!.correo = prefs.getString('gCorreo');
+      globals.usuario!.nombre = prefs.getString('gNombre');
+      globals.usuario!.documento = prefs.getString('gDocumento');
+      globals.usuario!.telefono = prefs.getString('gTelefono');
+      globals.usuario!.persona = prefs.getString('gPersona');
+      globals.usuario!.cuil = prefs.getString('gCuil');
+      globals.usuario!.razon_social = prefs.getString('gRazonSocial');
+      globals.usuario!.token = prefs.getString('gToken');
+      globals.usuario!.id_customer_mp = prefs.getString('gIdCustomerMp');
+      globals.usuario!.id_card_mp = prefs.getString('gIdCardMp');
+      globals.usuario!.provincia = prefs.getString('gProvincia');
+      globals.usuario!.municipio = prefs.getString('gMunicipio');
+      globals.usuario!.localidad = prefs.getString('gLocalidad');
+      globals.usuario!.calle = prefs.getString('gCalle');
+      globals.usuario!.numero = prefs.getString('gNumero');
+      globals.usuario!.piso = prefs.getString('gPiso');
+      globals.usuario!.departamento = prefs.getString('gDepartamento');
+      globals.usuario!.foto = prefs.getString('gFoto');
+      carrito = globals.carrito.id.length;
       _info();
+    }else{
+      logout();
     }
   }
 

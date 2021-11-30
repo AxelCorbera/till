@@ -7,6 +7,7 @@ import 'package:till/pages/address.dart';
 import 'package:till/pages/address_info.dart';
 import 'package:till/pages/my_account.dart';
 import 'package:till/pages/my_information.dart';
+import 'package:till/pages/notifications.dart';
 import 'package:till/pages/respuesta_pago.dart';
 import 'package:till/pages/scan_products.dart';
 import 'package:till/provider/google_sing_in.dart';
@@ -20,6 +21,7 @@ import 'package:till/pages/checkout.dart';
 import 'package:till/pages/info_payment.dart';
 import 'package:till/pages/purcharses.dart';
 import 'package:till/pages/purchasedetails.dart';
+import 'package:till/pages/support.dart';
 import 'package:till/scripts/mercadopago/customerJson.dart';
 import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 
@@ -68,6 +70,10 @@ class MyApp extends StatelessWidget {
               return addAddress();
             case '/Purchases':
               return Purchases();
+            case '/Notifications':
+              return Notifications();
+            case '/Support':
+              return Support();
             case '/PurchaseDetails':
               final args = settings.arguments as Compra;
               return PurchaseDetails(compra: args);

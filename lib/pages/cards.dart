@@ -154,28 +154,31 @@ class _CardsState extends State<Cards> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.end,
                                             children: [
-                                              Container(
-                                                alignment: Alignment.centerLeft,
-                                                width: 70,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: lista[index]
-                                                              .paymentMethod!
-                                                              .id !=
-                                                          ""
-                                                      ? DecorationImage(
-                                                          image: new AssetImage(
-                                                              MetodoPago(lista[
-                                                                      index]
-                                                                  .paymentMethod!
-                                                                  .id
-                                                                  .toString())),
-                                                          fit: BoxFit.contain,
-                                                        )
-                                                      : null,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
+                                              // Container(
+                                              //   alignment: Alignment.centerLeft,
+                                              //   width: 70,
+                                              //   height: 40,
+                                              //   decoration: BoxDecoration(
+                                              //     image: lista[index]
+                                              //                 .paymentMethod!
+                                              //                 .id !=
+                                              //             ""
+                                              //         ? DecorationImage(
+                                              //             image: new AssetImage(
+                                              //                 MetodoPago(lista[
+                                              //                         index]
+                                              //                     .paymentMethod!
+                                              //                     .id
+                                              //                     .toString())),
+                                              //             fit: BoxFit.contain,
+                                              //           )
+                                              //         : null,
+                                              //     borderRadius:
+                                              //         BorderRadius.circular(10),
+                                              //   ),
+                                              // ),
+                                              SizedBox(
+                                                height: 20,
                                               ),
                                               Text(
                                                 '**** **** **** ' +

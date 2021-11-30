@@ -318,8 +318,9 @@ class _LoginState extends State<Login> {
             globals.usuario!.foto = user.photoUrl;
           }
         });
-      }).
-      then((value) => Navigator.of(context).pushNamed('/Home'));
+      })
+          .then((value) => _loginSave())
+          .then((value) => Navigator.of(context).pushNamed('/Home'));
 
       //Navigator.of(context).pushNamed('/Home');
       globals.login = true;
@@ -375,8 +376,9 @@ class _LoginState extends State<Login> {
                       globals.usuario!.foto = result.get('foto');
                     }
                     });
-                  }).
-              then((value) => Navigator.of(context).pushNamed('/Home'));
+                  })
+                .then((value) => _loginSave())
+                    .then((value) => Navigator.of(context).pushNamed('/Home'));
 
                 //_loginSave();
 
@@ -409,7 +411,6 @@ class _LoginState extends State<Login> {
           setState(() {
             _loading = false;
             _errorMessage = "";
-            print(userName + '>>' + password);
           });
 
     }
@@ -469,7 +470,25 @@ class _LoginState extends State<Login> {
 
   void _loginSave() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', userName);
-    prefs.setString('password', password);
+    prefs.setString('gId', globals.usuario!.id.toString());
+    prefs.setString('gCorreo', globals.usuario!.correo.toString());
+    prefs.setString('gNombre', globals.usuario!.nombre.toString());
+    prefs.setString('gDocumento', globals.usuario!.documento.toString());
+    prefs.setString('gTelefono', globals.usuario!.telefono.toString());
+    prefs.setString('gPersona', globals.usuario!.persona.toString());
+    prefs.setString('gCuil', globals.usuario!.cuil.toString());
+    prefs.setString('gRazonSocial', globals.usuario!.razon_social.toString());
+    prefs.setString('gToken', globals.usuario!.token.toString());
+    prefs.setString('gIdCustomerMp', globals.usuario!.id_customer_mp.toString());
+    prefs.setString('gIdCardMp', globals.usuario!.id_card_mp.toString());
+    prefs.setString('gProvincia', globals.usuario!.provincia.toString());
+    prefs.setString('gMunicipio', globals.usuario!.municipio.toString());
+    prefs.setString('gLocalidad', globals.usuario!.localidad.toString());
+    prefs.setString('gCalle', globals.usuario!.calle.toString());
+    prefs.setString('gNumero', globals.usuario!.numero.toString());
+    prefs.setString('gPiso', globals.usuario!.piso.toString());
+    prefs.setString('gDepartamento', globals.usuario!.departamento.toString());
+    prefs.setString('gFoto', globals.usuario!.foto.toString());
+    prefs.setBool('login', true);
   }
 }
