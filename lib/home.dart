@@ -249,7 +249,7 @@ class _HomeState extends State<Home> {
                     ),
                     onTap: () {
                       globals.login
-                          ? Navigator.pushNamed(context, '/Purchases')
+                          ? Navigator.pushNamed(context, '/Support')
                           : _unlogin(context);
                     },
                   ),
