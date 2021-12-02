@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:till/constants/themes.dart';
 import 'package:till/globals.dart' as globals;
@@ -28,6 +29,7 @@ import 'package:till/scripts/mercadopago/json/baseDatos.dart';
 import 'home.dart';
 
 Future main() async{
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown]);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
