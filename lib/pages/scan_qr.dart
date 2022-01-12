@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:till/constants/themes.dart';
 import 'package:till/scripts/cloud_firestore.dart';
@@ -19,7 +21,7 @@ class Scan_QR extends StatefulWidget {
 class _Scan_QRState extends State<Scan_QR> {
   Comercios comercios = Comercios();
   String comercioEncontrado = '';
-
+  PermissionStatus _permissionStatus = PermissionStatus.denied;
   @override
   void initState() {
     super.initState();
@@ -33,11 +35,11 @@ class _Scan_QRState extends State<Scan_QR> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   List<int> numCompras = [];
-
+  final Permission _permission = Permission.camera;
   @override
   Widget build(BuildContext context) {
     print(globals.ingreso);
-    if (qr != '' && globals.ingreso==false) _cargarListado();
+    if (qr != '' && globals.ingreso == false) _cargarListado();
     return Scaffold(
       body: Container(
         constraints: const BoxConstraints(
@@ -52,6 +54,16 @@ class _Scan_QRState extends State<Scan_QR> {
         ),
         child: Stack(
           children: [
+            if (Platform.isIOS)
+              Transform(
+                transform: Matrix4.translationValues(
+                    0, MediaQuery.of(context).size.height / 20, 0),
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back_ios_outlined)),
+              ),
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -147,25 +159,41 @@ class _Scan_QRState extends State<Scan_QR> {
     );
   }
 
+  Future<void> requestPermission(Permission permission) async {
+    final status = await permission.request();
+    print('permiso camara2: ' + status.toString());
+    // setState(() {
+    //   print(status);
+    //   _permissionStatus = status;
+    //   print(_permissionStatus);
+    // });
+  }
+
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
-        ? 300.0
-        : 450.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderColor: Colores.amarillo,
-          borderRadius: 10,
-          borderLength: 20,
-          borderWidth: 15,
-          cutOutSize: scanArea),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
-    );
+    // print('permiso camara: ' + _permissionStatus.toString());
+    // if (_permissionStatus == PermissionStatus.denied) {
+    //   requestPermission(_permission);
+    //   return SizedBox();
+    // } else {
+      // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+      var scanArea = (MediaQuery.of(context).size.width < 400 ||
+              MediaQuery.of(context).size.height < 400)
+          ? 300.0
+          : 450.0;
+      // To ensure the Scanner view is properly sizes after rotation
+      // we need to listen for Flutter SizeChanged notification and update controller
+      return QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+            borderColor: Colores.amarillo,
+            borderRadius: 10,
+            borderLength: 20,
+            borderWidth: 15,
+            cutOutSize: scanArea),
+        onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+      );
+    // }
   }
 
   void _onQRViewCreated(QRViewController controller) {
@@ -182,7 +210,7 @@ class _Scan_QRState extends State<Scan_QR> {
     });
   }
 
-  void _comericoEncontrado() async{
+  void _comericoEncontrado() async {
     int i = 0;
     controller!.stopCamera();
     comercios = await cargarComercios();
@@ -200,16 +228,16 @@ class _Scan_QRState extends State<Scan_QR> {
   }
 
   void _cargarListado() async {
-    if(globals.ingreso==false){
-    for (int i = 0; i < comercios.qr!.length; i++) {
-      if (comercios.qr![i] == qr) {
-        globals.comercio = comercios.razonsocial![i];
-        await ClavesComercio(comercios.razonsocial![i]);
-        globals.ingreso = true;
-        globals.listado = await cargarListado(comercios.razonsocial![i]);
-        print(globals.listado.id!.length.toString() + 'productos cargados');
-        Navigator.of(context).pushNamed('/Scan_Products');
-      }
+    if (globals.ingreso == false) {
+      for (int i = 0; i < comercios.qr!.length; i++) {
+        if (comercios.qr![i] == qr) {
+          globals.comercio = comercios.razonsocial![i];
+          await ClavesComercio(comercios.razonsocial![i]);
+          globals.ingreso = true;
+          globals.listado = await cargarListado(comercios.razonsocial![i]);
+          print(globals.listado.id!.length.toString() + 'productos cargados');
+          Navigator.of(context).pushNamed('/Scan_Products');
+        }
       }
     }
   }
@@ -220,6 +248,23 @@ class _Scan_QRState extends State<Scan_QR> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('no Permission')),
       );
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: const Text('Permiso para utilizar camara'),
+            content: const Text(
+                'Till necesita utilizar la camara para comenzar a escanear'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: const Text('Denegar'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              CupertinoDialogAction(
+                child: const Text('Configuracion'),
+                onPressed: () => openAppSettings(),
+              ),
+            ],
+          ));
     }
   }
 
